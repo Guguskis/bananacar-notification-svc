@@ -3,6 +3,7 @@ package lt.liutikas.bananacar_notification_svc.application;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotificationPort;
+import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class NotifySubscriptionsUseCase {
+public class NotifySubscriptionsUseCase implements Loggable {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -67,6 +68,8 @@ public class NotifySubscriptionsUseCase {
                         ride.getRoute().getDestination().getCity(),
                         ride.getDepartsOn().format(DATE_TIME_FORMATTER)
                 );
+
+        getLogger().info("Sending ride notification [{}]", message);
 
         notificationPort.notify(message, ride.getBananacarUrl());
     }

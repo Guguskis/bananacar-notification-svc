@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByRideIdPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.SaveRidesPort;
+import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ScanRidesUseCase {
+public class ScanRidesUseCase implements Loggable {
 
     private final FetchLatestRidesPort fetchLatestRidesPort;
     private final FetchRidesByRideIdPort fetchRidesByRideIdPort;
@@ -23,13 +24,19 @@ public class ScanRidesUseCase {
 
     public void scan() {
 
-        List<Ride> rides = fetchRides();
+        getLogger().info("Starting BananaCar ride scan");
 
-        saveRidesPort.save(rides);
-        notifySubscriptionsUseCase.notifySubscriptions(rides);
+        List<Ride> newRides = fetchNewRides();
+
+        getLogger().info("Scanned {} new rides", newRides.size());
+
+        saveRidesPort.save(newRides);
+        notifySubscriptionsUseCase.notifySubscriptions(newRides);
+
+        getLogger().info("Completed BananaCar ride scan");
     }
 
-    private List<Ride> fetchRides() {
+    private List<Ride> fetchNewRides() {
 
         LocalDateTime maximumDepartsOn = LocalDateTime.now().plusDays(2);
         List<Ride> latestRides = fetchLatestRidesPort.fetch(maximumDepartsOn);
