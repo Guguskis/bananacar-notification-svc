@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.liquibase:liquibase-core'
+    implementation 'org.jooq:jooq-codegen:3.18.0'
     jooqGenerator 'org.postgresql:postgresql'
     jooqGenerator 'org.jooq:jooq-codegen:3.18.0'
     jooqGenerator 'org.jooq:jooq-meta:3.18.0'
@@ -55,6 +56,7 @@ jooq {
     version = '3.18.0'
     configurations {
         main {
+            generateSchemaSourceOnCompilation = false
             generationTool {
                 jdbc {
                     driver = 'org.postgresql.Driver'
@@ -69,9 +71,26 @@ jooq {
                         inputSchema = 'public'
                         excludes = 'databasechangelog|databasechangeloglock'
                     }
+
+                    generate {
+                        relations = false
+                        deprecated = false
+                        records = true
+                        pojos = true
+                        daos = true
+                        springAnnotations = true
+                        javaTimeTypes = true
+                        fluentSetters = true
+                        pojosEqualsAndHashCode = true
+                    }
+
                     target {
-                        packageName = 'lt.liutikas.bananacar_notification_svc.generated.jooq'
-                        directory = "src/main/generated-sources/lt/liutikas/bananacar_notification_svc.generated/jooq"
+                        packageName = 'lt.liutikas.bananacar_notification_svc.db.jooq'
+                        directory = "src/main/generated-db-entities/java"
+                    }
+
+                    strategy {
+                        name = 'lt.liutikas.bananacar_notification_svc.common.PrefixJooqGeneratorStrategy'
                     }
                 }
             }
@@ -82,11 +101,11 @@ jooq {
 sourceSets {
     main {
         java {
-            srcDir "src/main/generated-sources/lt/liutikas/bananacar_notification_svc.generated/jooq"
+            srcDir "src/main/generated-db-entities/java"
         }
     }
 }
 
-tasks.named("generateJooq") {
-    dependsOn.clear()
+dependencies {
+    jooqGenerator sourceSets.main.output
 }
