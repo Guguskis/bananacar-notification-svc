@@ -42,7 +42,7 @@ public class NotifySubscriptionsUseCase implements Loggable {
 
     private boolean isRouteMatch(Ride ride, RideSubscription subscription) {
 
-        return ride.getRoute().isRouteMatch(
+        return ride.isRouteMatch(
                 subscription.getOriginCity(),
                 subscription.getDestinationCity()
         );
@@ -64,8 +64,8 @@ public class NotifySubscriptionsUseCase implements Loggable {
 
         String message = "A new ride has appeared from %s to %s departuring on %s!"
                 .formatted(
-                        ride.getRoute().getOrigin().getCity(),
-                        ride.getRoute().getDestination().getCity(),
+                        ride.getOrigin().getCity(),
+                        ride.getDestination().getCity(),
                         ride.getDepartsOn().format(DATE_TIME_FORMATTER)
                 );
 

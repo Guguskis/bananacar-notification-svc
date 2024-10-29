@@ -10,7 +10,6 @@ import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Location;
 import lt.liutikas.bananacar_notification_svc.domain.LocationType;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
-import lt.liutikas.bananacar_notification_svc.domain.Route;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.core.har.HarEntry;
 import org.openqa.selenium.By;
@@ -77,13 +76,13 @@ public class BananacarPage implements Loggable {
 
         try {
 
-            Route route = mapRoute(ride.getLocations());
+            List<Location> locations = mapRoute(ride.getLocations());
             URL bananacarUrl = new URL(BANANACAR_BASE_URL + "/ride/find?ride_id=" + ride.getId());
             LocalDateTime departureDatetime = ride.getDepartureDatetime();
 
             return Ride.builder()
                     .rideId(ride.getId())
-                    .route(route)
+                    .locations(locations)
                     .departsOn(departureDatetime)
                     .bananacarUrl(bananacarUrl)
                     .build();
@@ -93,7 +92,7 @@ public class BananacarPage implements Loggable {
         }
     }
 
-    private Route mapRoute(List<BananacarLocation> bananacarLocations) {
+    private List<Location> mapRoute(List<BananacarLocation> bananacarLocations) {
 
         List<Location> locations = new ArrayList<>();
 
@@ -107,9 +106,7 @@ public class BananacarPage implements Loggable {
                     .build());
         }
 
-        return Route.builder()
-                .locations(locations)
-                .build();
+        return locations;
     }
 
     private LocationType resolveLocationType(int currentLocation, int locationsCount) {
