@@ -1,52 +1,92 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.5'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'io.freefair.lombok' version '8.10.2'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'io.freefair.lombok' version '8.10.2'
+    id 'nu.studer.jooq' version '9.0'
 }
 
 group = 'lt.liutikas'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.liquibase:liquibase-core'
+    jooqGenerator 'org.postgresql:postgresql'
+    jooqGenerator 'org.jooq:jooq-codegen:3.18.0'
+    jooqGenerator 'org.jooq:jooq-meta:3.18.0'
 
-	implementation 'org.springframework.boot:spring-boot-starter-jooq'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'org.postgresql:postgresql:42.7.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	compileOnly 'org.projectlombok:lombok:1.18.34'
-	annotationProcessor 'org.projectlombok:lombok:1.18.34'
-	testCompileOnly 'org.projectlombok:lombok:1.18.34'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-	implementation "org.jsoup:jsoup:1.18.1"
-
-	// WebDriverManager dependency
-	implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
-
-	// Selenium dependencies
-	implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
-	implementation 'org.seleniumhq.selenium:selenium-api:4.25.0'
-	implementation 'net.lightbody.bmp:browsermob-core:2.1.5'
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	implementation 'org.javacord:javacord:3.8.0'
-	implementation 'com.squareup.okio:okio:3.9.1'
+    implementation "org.jsoup:jsoup:1.18.1"
+    implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
+    implementation 'org.seleniumhq.selenium:selenium-api:4.25.0'
+    implementation 'net.lightbody.bmp:browsermob-core:2.1.5'
+    implementation 'org.javacord:javacord:3.8.0'
+    implementation 'com.squareup.okio:okio:3.9.1'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+}
+
+jooq {
+    version = '3.18.0'
+    configurations {
+        main {
+            generationTool {
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/bananacar_notification_svc'
+                    user = 'postgresql'
+                    password = 'admin'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        excludes = 'databasechangelog|databasechangeloglock'
+                    }
+                    target {
+                        packageName = 'lt.liutikas.bananacar_notification_svc.generated.jooq'
+                        directory = "src/main/generated-sources/lt/liutikas/bananacar_notification_svc.generated/jooq"
+                    }
+                }
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "src/main/generated-sources/lt/liutikas/bananacar_notification_svc.generated/jooq"
+        }
+    }
+}
+
+tasks.named("generateJooq") {
+    dependsOn.clear()
 }
