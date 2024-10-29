@@ -2,7 +2,7 @@ package lt.liutikas.bananacar_notification_svc.application;
 
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
-import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByRideIdPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.SaveRidesPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ScanRidesUseCase implements Loggable {
 
     private final FetchLatestRidesPort fetchLatestRidesPort;
-    private final FetchRidesByRideIdPort fetchRidesByRideIdPort;
+    private final FetchRidesByBananacarRideIdPort fetchRidesByBananacarRideIdPort;
     private final SaveRidesPort saveRidesPort;
     private final NotifySubscriptionsUseCase notifySubscriptionsUseCase;
 
@@ -46,17 +46,17 @@ public class ScanRidesUseCase implements Loggable {
 
     private List<Ride> filterNewRides(List<Ride> rides) {
 
-        List<String> rideIds = rides.stream()
-                .map(Ride::getRideId)
+        List<String> bananacarRideIds = rides.stream()
+                .map(Ride::getBananacarRideId)
                 .toList();
 
-        Set<String> existingRideIds = fetchRidesByRideIdPort.fetch(rideIds)
+        Set<String> existingRideIds = fetchRidesByBananacarRideIdPort.fetch(bananacarRideIds)
                 .stream()
-                .map(Ride::getRideId)
+                .map(Ride::getBananacarRideId)
                 .collect(Collectors.toSet());
 
         return rides.stream()
-                .filter(ride -> !existingRideIds.contains(ride.getRideId()))
+                .filter(ride -> !existingRideIds.contains(ride.getBananacarRideId()))
                 .toList();
     }
 }

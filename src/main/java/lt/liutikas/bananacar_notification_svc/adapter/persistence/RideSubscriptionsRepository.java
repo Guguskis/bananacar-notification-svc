@@ -14,13 +14,17 @@ public class RideSubscriptionsRepository implements FetchRideSubscriptionsPort {
     @Override
     public List<RideSubscription> fetch() {
 
+        LocalDateTime now = LocalDateTime.now();
+
         return List.of(
                 RideSubscription.builder()
-                        .departsOnEarliest(LocalDateTime.now())
-                        .departsOnLatest(LocalDateTime.now().plusDays(1))
                         .subscriptionId(UUID.randomUUID())
+                        .departsOnEarliest(now)
+                        .departsOnLatest(now.plusDays(1))
                         .originCity("Vilnius")
                         .destinationCity("Klaipėda")
+                        .createdOn(now)
+                        .updatedOn(now)
                         .build()
         );
     }

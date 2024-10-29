@@ -6,15 +6,19 @@ import lombok.Data;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class Ride {
 
-    final String rideId;
+    final UUID id;
+    final String bananacarRideId;
     final List<Location> locations;
     final LocalDateTime departsOn;
     final URL bananacarUrl;
+    final LocalDateTime createdOn;
+    final LocalDateTime updatedOn;
 
     public boolean isRouteMatch(String originCity, String destinationCity) {
 

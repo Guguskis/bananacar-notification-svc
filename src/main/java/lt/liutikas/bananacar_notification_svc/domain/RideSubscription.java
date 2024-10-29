@@ -15,5 +15,7 @@ public class RideSubscription {
     final String destinationCity;
     final LocalDateTime departsOnEarliest;
     final LocalDateTime departsOnLatest;
+    final LocalDateTime createdOn;
+    final LocalDateTime updatedOn;
 
 }

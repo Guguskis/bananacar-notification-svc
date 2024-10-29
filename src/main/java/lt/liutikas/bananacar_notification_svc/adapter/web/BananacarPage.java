@@ -81,10 +81,12 @@ public class BananacarPage implements Loggable {
             LocalDateTime departureDatetime = ride.getDepartureDatetime();
 
             return Ride.builder()
-                    .rideId(ride.getId())
+                    .bananacarRideId(ride.getId())
                     .locations(locations)
                     .departsOn(departureDatetime)
                     .bananacarUrl(bananacarUrl)
+                    .createdOn(LocalDateTime.now())
+                    .updatedOn(LocalDateTime.now())
                     .build();
 
         } catch (Exception e) {
