@@ -25,8 +25,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -69,6 +71,13 @@ public class BananacarPage implements Loggable {
                 .map(BananacarRideSearchResponse::getRides)
                 .flatMap(Collection::stream)
                 .map(this::toRides)
+                .collect(Collectors.toMap(
+                        Ride::getBananacarRideId,
+                        Function.identity(),
+                        (existing, replacement) -> replacement
+                ))
+                .values()
+                .stream()
                 .toList();
     }
 
