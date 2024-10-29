@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: 20241029_create_table_ride.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20241029_create_table_ride_subscription.sql
+      relativeToChangelogFile: true
