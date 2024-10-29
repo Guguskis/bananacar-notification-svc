@@ -33,20 +33,22 @@ public class NotifySubscriptionsUseCase {
 
     private boolean isInterested(RideSubscription subscription, Ride ride) {
 
-        return isRouteMatch(subscription, ride)
-                && withinDepartureTimeframe(ride, subscription);
+        return isRouteMatch(ride, subscription) && withinDepartureTimeframe(ride, subscription);
     }
 
-    private boolean isRouteMatch(RideSubscription subscription, Ride ride) {
-        return ride.originCity().equalsIgnoreCase(subscription.originCity())
-                && ride.destinationCity().equalsIgnoreCase(subscription.destinationCity());
+    private boolean isRouteMatch(Ride ride, RideSubscription subscription) {
+
+        return ride.getRoute().isRouteMatch(
+                subscription.getOriginCity(),
+                subscription.getDestinationCity()
+        );
     }
 
     private boolean withinDepartureTimeframe(Ride ride, RideSubscription subscription) {
 
-        LocalDateTime subscriptionDepartsOnEarliest = subscription.departsOnEarliest();
-        LocalDateTime subscriptionDepartsOnLatest = subscription.departsOnLatest();
-        LocalDateTime rideDepartsOn = ride.departsOn();
+        LocalDateTime subscriptionDepartsOnEarliest = subscription.getDepartsOnEarliest();
+        LocalDateTime subscriptionDepartsOnLatest = subscription.getDepartsOnLatest();
+        LocalDateTime rideDepartsOn = ride.getDepartsOn();
 
         boolean rideNotTooEarly = subscriptionDepartsOnEarliest.isAfter(rideDepartsOn) || subscriptionDepartsOnEarliest.equals(rideDepartsOn);
         boolean rideNotTooLate = subscriptionDepartsOnLatest.isAfter(rideDepartsOn) || subscriptionDepartsOnLatest.isEqual(rideDepartsOn);
@@ -56,8 +58,12 @@ public class NotifySubscriptionsUseCase {
 
     private void notify(RideSubscription subscription, Ride ride) {
 
-        String message = "A new ride to %s has appeared".formatted(ride.destinationCity());
+        String message = "A new ride from %s to %s has appeared"
+                .formatted(
+                        ride.getRoute().getOrigin().getCity(),
+                        ride.getRoute().getDestination().getCity()
+                );
 
-        notificationPort.notifyUser(subscription.userId(), message, ride.bananacarUrl());
+        notificationPort.notifyUser(subscription.getUserId(), message, ride.getBananacarUrl());
     }
 }

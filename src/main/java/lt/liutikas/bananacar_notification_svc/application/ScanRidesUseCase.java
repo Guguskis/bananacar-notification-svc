@@ -40,16 +40,16 @@ public class ScanRidesUseCase {
     private List<Ride> filterNewRides(List<Ride> rides) {
 
         List<String> rideIds = rides.stream()
-                .map(Ride::rideId)
+                .map(Ride::getRideId)
                 .toList();
 
         Set<String> existingRideIds = fetchRidesByRideIdPort.fetch(rideIds)
                 .stream()
-                .map(Ride::rideId)
+                .map(Ride::getRideId)
                 .collect(Collectors.toSet());
 
         return rides.stream()
-                .filter(ride -> !existingRideIds.contains(ride.rideId()))
+                .filter(ride -> !existingRideIds.contains(ride.getRideId()))
                 .toList();
     }
 }

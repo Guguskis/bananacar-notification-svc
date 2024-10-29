@@ -1,13 +1,17 @@
 package lt.liutikas.bananacar_notification_svc.domain;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.net.URL;
 import java.time.LocalDateTime;
 
-public record Ride(
-        String rideId,
-        String originCity,
-        String destinationCity,
-        LocalDateTime departsOn,
-        URL bananacarUrl
-) {
+@Data
+@Builder
+public class Ride {
+
+    final String rideId;
+    final Route route;
+    final LocalDateTime departsOn;
+    final URL bananacarUrl;
 }
