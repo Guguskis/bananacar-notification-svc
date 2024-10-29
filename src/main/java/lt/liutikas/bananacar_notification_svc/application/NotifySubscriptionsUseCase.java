@@ -8,11 +8,14 @@ import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class NotifySubscriptionsUseCase {
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
     private final NotificationPort notificationPort;
@@ -28,7 +31,7 @@ public class NotifySubscriptionsUseCase {
 
         rides.stream()
                 .filter(ride -> isInterested(subscription, ride))
-                .forEach(ride -> notify(subscription, ride));
+                .forEach(this::notify);
     }
 
     private boolean isInterested(RideSubscription subscription, Ride ride) {
@@ -50,20 +53,21 @@ public class NotifySubscriptionsUseCase {
         LocalDateTime subscriptionDepartsOnLatest = subscription.getDepartsOnLatest();
         LocalDateTime rideDepartsOn = ride.getDepartsOn();
 
-        boolean rideNotTooEarly = subscriptionDepartsOnEarliest.isAfter(rideDepartsOn) || subscriptionDepartsOnEarliest.equals(rideDepartsOn);
+        boolean rideNotTooEarly = subscriptionDepartsOnEarliest.isBefore(rideDepartsOn) || subscriptionDepartsOnEarliest.equals(rideDepartsOn);
         boolean rideNotTooLate = subscriptionDepartsOnLatest.isAfter(rideDepartsOn) || subscriptionDepartsOnLatest.isEqual(rideDepartsOn);
 
         return rideNotTooEarly && rideNotTooLate;
     }
 
-    private void notify(RideSubscription subscription, Ride ride) {
+    private void notify(Ride ride) {
 
-        String message = "A new ride from %s to %s has appeared"
+        String message = "A new ride has appeared from %s to %s departuring on %s!"
                 .formatted(
                         ride.getRoute().getOrigin().getCity(),
-                        ride.getRoute().getDestination().getCity()
+                        ride.getRoute().getDestination().getCity(),
+                        ride.getDepartsOn().format(DATE_TIME_FORMATTER)
                 );
 
-        notificationPort.notifyUser(subscription.getUserId(), message, ride.getBananacarUrl());
+        notificationPort.notify(message, ride.getBananacarUrl());
     }
 }

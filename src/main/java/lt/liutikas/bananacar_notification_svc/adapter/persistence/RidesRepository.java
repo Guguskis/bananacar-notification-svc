@@ -14,7 +14,7 @@ public class RidesRepository implements FetchRidesByRideIdPort, SaveRidesPort {
     public List<Ride> fetch(List<String> rideIds) {
 
         // todo
-        return null;
+        return List.of();
     }
 
     @Override

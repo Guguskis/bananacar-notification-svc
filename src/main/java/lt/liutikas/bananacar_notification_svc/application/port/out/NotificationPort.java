@@ -4,5 +4,5 @@ import java.net.URL;
 
 public interface NotificationPort {
 
-    void notifyUser(String userId, String message, URL bananacarUrl);
+    void notify(String message, URL bananacarUrl);
 }

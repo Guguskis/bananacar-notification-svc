@@ -42,6 +42,9 @@ dependencies {
 	implementation 'net.lightbody.bmp:browsermob-core:2.1.5'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.javacord:javacord:3.8.0'
+	implementation 'com.squareup.okio:okio:3.9.1'
 }
 
 tasks.named('test') {
