@@ -141,11 +141,11 @@ public class BananacarPage implements Loggable {
         return locations;
     }
 
-    private LocationType resolveLocationType(int currentLocation, int locationsCount) {
+    private LocationType resolveLocationType(int currentLocationOrder, int locationsCount) {
 
-        if (currentLocation == 0) {
+        if (currentLocationOrder == 0) {
             return LocationType.ORIGIN;
-        } else if (currentLocation == locationsCount - 1) {
+        } else if (currentLocationOrder == locationsCount - 1) {
             return LocationType.DESTINATION;
         } else {
             return LocationType.INTERMEDIARY;

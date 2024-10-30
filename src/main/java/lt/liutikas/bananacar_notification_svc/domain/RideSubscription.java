@@ -10,12 +10,12 @@ import java.util.UUID;
 @Builder
 public class RideSubscription {
 
-    final UUID subscriptionId;
-    final String originCity;
-    final String destinationCity;
-    final LocalDateTime departsOnEarliest;
-    final LocalDateTime departsOnLatest;
-    final LocalDateTime createdOn;
-    final LocalDateTime updatedOn;
+    private final UUID subscriptionId;
+    private final String originCity;
+    private final String destinationCity;
+    private final LocalDateTime departsOnEarliest;
+    private final LocalDateTime departsOnLatest;
+    private final LocalDateTime createdOn;
+    private final LocalDateTime updatedOn;
 
 }

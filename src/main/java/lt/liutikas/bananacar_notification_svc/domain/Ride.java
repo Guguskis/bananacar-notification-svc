@@ -13,13 +13,13 @@ import java.util.UUID;
 @Builder
 public class Ride {
 
-    final UUID id;
-    final String bananacarRideId;
-    final List<Location> locations;
-    final LocalDateTime departsOn;
-    final URL bananacarUrl;
-    final LocalDateTime createdOn;
-    final LocalDateTime updatedOn;
+    private final UUID id;
+    private final String bananacarRideId;
+    private final List<Location> locations;
+    private final LocalDateTime departsOn;
+    private final URL bananacarUrl;
+    private final LocalDateTime createdOn;
+    private final LocalDateTime updatedOn;
 
     public boolean isRouteMatch(String originCity, String destinationCity) {
 

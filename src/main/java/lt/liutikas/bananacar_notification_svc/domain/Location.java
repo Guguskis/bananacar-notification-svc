@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class Location {
 
-    final String city;
-    final LocationType type;
+    private final String city;
+    private final LocationType type;
 }
