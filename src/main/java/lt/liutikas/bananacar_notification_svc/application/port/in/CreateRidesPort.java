@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.application.port.out;
+package lt.liutikas.bananacar_notification_svc.application.port.in;
 
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 

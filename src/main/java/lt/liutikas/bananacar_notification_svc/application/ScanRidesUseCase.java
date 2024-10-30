@@ -1,9 +1,9 @@
 package lt.liutikas.bananacar_notification_svc.application;
 
 import lombok.RequiredArgsConstructor;
+import lt.liutikas.bananacar_notification_svc.application.port.in.CreateRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.CreateRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.common.RidesScanProperties;

@@ -1,7 +1,7 @@
 package lt.liutikas.bananacar_notification_svc.adapter.persistence;
 
 import lombok.RequiredArgsConstructor;
-import lt.liutikas.bananacar_notification_svc.application.CreateRideSubscriptionPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.CreateRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.records.JooqRideSubscriptionRecord;
