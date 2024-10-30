@@ -6,6 +6,7 @@ import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBa
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.SaveRidesPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.RidesScanProperties;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ public class ScanRidesUseCase implements Loggable {
     private final FetchRidesByBananacarRideIdPort fetchRidesByBananacarRideIdPort;
     private final SaveRidesPort saveRidesPort;
     private final NotifyRideSubscriptionsPort notifyRideSubscriptionsPort;
+    private final RidesScanProperties ridesScanProperties;
 
     public void scan() {
 
@@ -39,7 +41,7 @@ public class ScanRidesUseCase implements Loggable {
 
     private List<Ride> fetchNewRides() {
 
-        LocalDateTime maximumDepartsOn = LocalDateTime.now().plusDays(2);
+        LocalDateTime maximumDepartsOn = LocalDateTime.now().plusDays(ridesScanProperties.getMaximumDepartureInDays());
         List<Ride> latestRides = fetchLatestRidesPort.fetch(maximumDepartsOn);
 
         return filterNewRides(latestRides);
