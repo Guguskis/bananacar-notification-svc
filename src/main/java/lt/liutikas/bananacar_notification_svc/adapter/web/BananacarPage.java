@@ -159,7 +159,7 @@ public class BananacarPage implements Loggable {
     private BananacarRideSearchResponse parseBananacarRideSearchResponse(String responseBody) {
 
         try {
-            return objectMapper.readValue(responseBody, BananacarRideSearchResponse.class); // fixme sometimes null
+            return objectMapper.readValue(responseBody, BananacarRideSearchResponse.class);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Failed to parse BananacarRideSearchResponse", e);
         }
