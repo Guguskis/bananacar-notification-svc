@@ -24,32 +24,29 @@ public class BananacarService implements Loggable, FetchLatestRidesPort {
         List<Ride> rides = new ArrayList<>();
 
         LocalDateTime farthestDepartsOn = null;
-        int previousPage = -1;
 
         do {
-            int currentPage;
 
             if (farthestDepartsOn == null) {
-                currentPage = bananacarPage.navigateToRidesHomePage();
+                bananacarPage.navigateToRidesHomePage();
             } else {
-                currentPage = bananacarPage.navigateToRidesNextPage();
+                bananacarPage.navigateToRidesNextPage();
             }
 
             List<Ride> pageRides = bananacarPage.getRides();
 
-            if (pageRides.isEmpty() || previousPage == currentPage) {
+            if (pageRides.isEmpty()) {
                 break;
             }
 
             rides.addAll(pageRides);
 
-            previousPage = currentPage;
             farthestDepartsOn = rides.stream()
                     .map(Ride::getDepartsOn)
                     .max(LocalDateTime::compareTo)
                     .orElse(maximumDepartsOn);
 
-        } while (farthestDepartsOn.isBefore(maximumDepartsOn));
+        } while (farthestDepartsOn.isBefore(maximumDepartsOn) && !bananacarPage.isLastPage());
 
         return removeDuplicates(rides);
     }

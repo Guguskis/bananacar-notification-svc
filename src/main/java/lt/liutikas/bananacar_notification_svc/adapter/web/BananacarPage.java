@@ -37,42 +37,32 @@ public class BananacarPage implements Loggable {
 
     private int currentPageNumber = 1;
 
-    public int navigateToRidesHomePage() {
+    public void navigateToRidesHomePage() {
 
         cleanUpExistingNetworkLogs();
 
         currentPageNumber = 1;
         navigateToPage(currentPageNumber);
-
-        return currentPageNumber;
     }
 
-    public int navigateToRidesNextPage() {
+    public void navigateToRidesNextPage() {
 
         int maxPageNumber = getMaxPageNumber();
 
         if (currentPageNumber >= maxPageNumber) {
             getLogger().warn("Cannot navigate to next page, currentPage [{}], maxPage [{}]", currentPageNumber, maxPageNumber);
-            return currentPageNumber;
+            return;
         }
 
         cleanUpExistingNetworkLogs();
 
         currentPageNumber++;
         navigateToPage(currentPageNumber);
-
-        return currentPageNumber;
     }
 
-    private int getMaxPageNumber() {
+    public boolean isLastPage() {
 
-        return proxy.getHar().getLog().getEntries().stream()
-                .filter(BananacarPage::isRidesSearchRequest)
-                .map(h -> h.getResponse().getContent().getText())
-                .map(this::parseBananacarRideSearchResponse)
-                .findFirst()
-                .map(BananacarRideSearchResponse::getLastPage)
-                .orElseThrow(() -> new IllegalArgumentException("RidesSearchRequest not found"));
+        return currentPageNumber == getMaxPageNumber();
     }
 
     public List<Ride> getRides() {
@@ -85,6 +75,17 @@ public class BananacarPage implements Loggable {
                 .flatMap(Collection::stream)
                 .map(this::toRides)
                 .toList();
+    }
+
+    private int getMaxPageNumber() {
+
+        return proxy.getHar().getLog().getEntries().stream()
+                .filter(BananacarPage::isRidesSearchRequest)
+                .map(h -> h.getResponse().getContent().getText())
+                .map(this::parseBananacarRideSearchResponse)
+                .findFirst()
+                .map(BananacarRideSearchResponse::getLastPage)
+                .orElseThrow(() -> new IllegalArgumentException("RidesSearchRequest not found"));
     }
 
     private void navigateToPage(int pageNumber) {
