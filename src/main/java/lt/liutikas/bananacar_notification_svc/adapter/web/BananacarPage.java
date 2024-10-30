@@ -99,7 +99,7 @@ public class BananacarPage implements Loggable {
 
         webDriver.navigate().to(RIDES_URL_TEMPLATE.formatted(pageNumber));
 
-        forceWait(Duration.ofMillis(100));
+        forceWait(Duration.ofMillis(200));
     }
 
     private Ride toRides(BananacarRide ride) {
