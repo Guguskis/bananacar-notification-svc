@@ -27,10 +27,10 @@ public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscript
 
         fetchRideSubscriptionsPort
                 .fetch()
-                .forEach(subscription -> notify(subscription, rides));
+                .forEach(subscription -> notifyIfInterested(subscription, rides));
     }
 
-    private void notify(RideSubscription subscription, List<Ride> rides) {
+    private void notifyIfInterested(RideSubscription subscription, List<Ride> rides) {
 
         rides.stream()
                 .filter(ride -> isInterested(subscription, ride))
