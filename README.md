@@ -1,6 +1,6 @@
 # Banana Car Notification Service
 
-**Tired of frantically refreshing Banana Car to find that ride tomorrow? Fear not!**
+**Tired of frantically refreshing Banana Car to find that important ride tomorrow? 😱 Fear not!**
 
 This application automates it with Discord integration:
 
@@ -8,7 +8,7 @@ This application automates it with Discord integration:
 
 ## Discord commands
 
-There are several commands available to manage subscriptions. Typing any of them in Discord wil provide more
+There are several commands available to manage ride subscriptions. Typing any of them in Discord will provide more
 information:
 
 * `/rides subscriptions list`
