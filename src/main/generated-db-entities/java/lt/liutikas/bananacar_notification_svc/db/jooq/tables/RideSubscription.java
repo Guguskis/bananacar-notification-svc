@@ -12,6 +12,7 @@ import lt.liutikas.bananacar_notification_svc.db.jooq.tables.records.JooqRideSub
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -48,7 +49,7 @@ public class RideSubscription extends TableImpl<JooqRideSubscriptionRecord> {
     /**
      * The column <code>public.ride_subscription.id</code>.
      */
-    public final TableField<JooqRideSubscriptionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<JooqRideSubscriptionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.ride_subscription.origin_city</code>.
@@ -116,6 +117,11 @@ public class RideSubscription extends TableImpl<JooqRideSubscriptionRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public Identity<JooqRideSubscriptionRecord, Integer> getIdentity() {
+        return (Identity<JooqRideSubscriptionRecord, Integer>) super.getIdentity();
     }
 
     @Override
