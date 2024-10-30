@@ -1,9 +1,19 @@
 # Banana Car Notification Service
 
-Tired of frantically refreshing Banana Car to find that ride tomorrow? Fear not! This service automatically scans for
-rides and shares them in Discord:
+**Tired of frantically refreshing Banana Car to find that ride tomorrow? Fear not!**
+
+This application automates it with Discord integration:
 
 ![discord_banana_car.png](pictures/discord_banana_car.png)
+
+## Discord commands
+
+There are several commands available to manage subscriptions. Typing any of them in Discord wil provide more
+information:
+
+* `/rides subscriptions list`
+* `/rides subscriptions create`
+* `/rides subscriptions delete`
 
 ## Set up
 
