@@ -62,7 +62,7 @@ public class NotifySubscriptionsUseCase implements Loggable {
 
     private void notify(Ride ride) {
 
-        String message = "A new ride has appeared from %s to %s departure on %s"
+        String message = "A new ride has appeared from %s to %s with departure on %s"
                 .formatted(
                         ride.getOrigin().getCity(),
                         ride.getDestination().getCity(),
