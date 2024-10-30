@@ -4,7 +4,7 @@ import lt.liutikas.bananacar_notification_svc.domain.Ride;
 
 import java.util.List;
 
-public interface SaveRidesPort {
+public interface CreateRidesPort {
 
     void save(List<Ride> rides);
 }

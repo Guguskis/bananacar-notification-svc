@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.SaveRidesPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.CreateRidesPort;
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.records.JooqRideRecord;
 import lt.liutikas.bananacar_notification_svc.domain.Location;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
@@ -21,7 +21,7 @@ import static lt.liutikas.bananacar_notification_svc.db.jooq.Tables.RIDE;
 
 @Repository
 @RequiredArgsConstructor
-public class RidesRepository implements FetchRidesByBananacarRideIdPort, SaveRidesPort {
+public class RidesRepository implements FetchRidesByBananacarRideIdPort, CreateRidesPort {
 
     private final DSLContext dslContext;
     private final ObjectMapper objectMapper;
