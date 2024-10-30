@@ -29,6 +29,7 @@ public class BananacarPage implements Loggable {
     private static final String BANANACAR_BASE_URL = "https://bananacar.lt/en";
     private static final String RIDE_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?ride_id=%s";
     private static final String RIDES_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?page=%s";
+    private static final String RIDES_SEARCH_API_PATH = "/api/v1/rides/search";
 
     private final WebDriver webDriver;
     private final BrowserMobProxy proxy;
@@ -151,7 +152,7 @@ public class BananacarPage implements Loggable {
 
     private static boolean isRidesSearchRequest(HarEntry har) {
 
-        return har.getRequest().getUrl().contains("/api/v1/rides/search");
+        return har.getRequest().getUrl().contains(RIDES_SEARCH_API_PATH);
     }
 
     private BananacarRideSearchResponse parseBananacarRideSearchResponse(String responseBody) {
