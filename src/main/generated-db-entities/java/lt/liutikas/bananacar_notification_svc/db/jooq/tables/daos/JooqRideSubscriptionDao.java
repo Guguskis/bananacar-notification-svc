@@ -7,7 +7,6 @@ package lt.liutikas.bananacar_notification_svc.db.jooq.tables.daos;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.RideSubscription;
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.pojos.JooqRideSubscription;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Repository
-public class JooqRideSubscriptionDao extends DAOImpl<JooqRideSubscriptionRecord, JooqRideSubscription, UUID> {
+public class JooqRideSubscriptionDao extends DAOImpl<JooqRideSubscriptionRecord, JooqRideSubscription, Integer> {
 
     /**
      * Create a new JooqRideSubscriptionDao without any configuration
@@ -42,37 +41,37 @@ public class JooqRideSubscriptionDao extends DAOImpl<JooqRideSubscriptionRecord,
     }
 
     @Override
-    public UUID getId(JooqRideSubscription object) {
-        return object.getSubscriptionId();
+    public Integer getId(JooqRideSubscription object) {
+        return object.getId();
     }
 
     /**
-     * Fetch records that have <code>subscription_id BETWEEN lowerInclusive AND
+     * Fetch records that have <code>id BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<JooqRideSubscription> fetchRangeOfSubscriptionId(UUID lowerInclusive, UUID upperInclusive) {
-        return fetchRange(RideSubscription.RIDE_SUBSCRIPTION.SUBSCRIPTION_ID, lowerInclusive, upperInclusive);
+    public List<JooqRideSubscription> fetchRangeOfId(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(RideSubscription.RIDE_SUBSCRIPTION.ID, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>subscription_id IN (values)</code>
+     * Fetch records that have <code>id IN (values)</code>
      */
-    public List<JooqRideSubscription> fetchBySubscriptionId(UUID... values) {
-        return fetch(RideSubscription.RIDE_SUBSCRIPTION.SUBSCRIPTION_ID, values);
+    public List<JooqRideSubscription> fetchById(Integer... values) {
+        return fetch(RideSubscription.RIDE_SUBSCRIPTION.ID, values);
     }
 
     /**
-     * Fetch a unique record that has <code>subscription_id = value</code>
+     * Fetch a unique record that has <code>id = value</code>
      */
-    public JooqRideSubscription fetchOneBySubscriptionId(UUID value) {
-        return fetchOne(RideSubscription.RIDE_SUBSCRIPTION.SUBSCRIPTION_ID, value);
+    public JooqRideSubscription fetchOneById(Integer value) {
+        return fetchOne(RideSubscription.RIDE_SUBSCRIPTION.ID, value);
     }
 
     /**
-     * Fetch a unique record that has <code>subscription_id = value</code>
+     * Fetch a unique record that has <code>id = value</code>
      */
-    public Optional<JooqRideSubscription> fetchOptionalBySubscriptionId(UUID value) {
-        return fetchOptional(RideSubscription.RIDE_SUBSCRIPTION.SUBSCRIPTION_ID, value);
+    public Optional<JooqRideSubscription> fetchOptionalById(Integer value) {
+        return fetchOptional(RideSubscription.RIDE_SUBSCRIPTION.ID, value);
     }
 
     /**

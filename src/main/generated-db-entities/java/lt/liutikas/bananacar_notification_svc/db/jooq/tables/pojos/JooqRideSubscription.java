@@ -6,7 +6,6 @@ package lt.liutikas.bananacar_notification_svc.db.jooq.tables.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 /**
@@ -17,7 +16,7 @@ public class JooqRideSubscription implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private UUID subscriptionId;
+    private Integer id;
     private String originCity;
     private String destinationCity;
     private LocalDateTime departsOnEarliest;
@@ -28,7 +27,7 @@ public class JooqRideSubscription implements Serializable {
     public JooqRideSubscription() {}
 
     public JooqRideSubscription(JooqRideSubscription value) {
-        this.subscriptionId = value.subscriptionId;
+        this.id = value.id;
         this.originCity = value.originCity;
         this.destinationCity = value.destinationCity;
         this.departsOnEarliest = value.departsOnEarliest;
@@ -38,7 +37,7 @@ public class JooqRideSubscription implements Serializable {
     }
 
     public JooqRideSubscription(
-        UUID subscriptionId,
+        Integer id,
         String originCity,
         String destinationCity,
         LocalDateTime departsOnEarliest,
@@ -46,7 +45,7 @@ public class JooqRideSubscription implements Serializable {
         LocalDateTime createdOn,
         LocalDateTime updatedOn
     ) {
-        this.subscriptionId = subscriptionId;
+        this.id = id;
         this.originCity = originCity;
         this.destinationCity = destinationCity;
         this.departsOnEarliest = departsOnEarliest;
@@ -56,17 +55,17 @@ public class JooqRideSubscription implements Serializable {
     }
 
     /**
-     * Getter for <code>public.ride_subscription.subscription_id</code>.
+     * Getter for <code>public.ride_subscription.id</code>.
      */
-    public UUID getSubscriptionId() {
-        return this.subscriptionId;
+    public Integer getId() {
+        return this.id;
     }
 
     /**
-     * Setter for <code>public.ride_subscription.subscription_id</code>.
+     * Setter for <code>public.ride_subscription.id</code>.
      */
-    public JooqRideSubscription setSubscriptionId(UUID subscriptionId) {
-        this.subscriptionId = subscriptionId;
+    public JooqRideSubscription setId(Integer id) {
+        this.id = id;
         return this;
     }
 
@@ -169,11 +168,11 @@ public class JooqRideSubscription implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         final JooqRideSubscription other = (JooqRideSubscription) obj;
-        if (this.subscriptionId == null) {
-            if (other.subscriptionId != null)
+        if (this.id == null) {
+            if (other.id != null)
                 return false;
         }
-        else if (!this.subscriptionId.equals(other.subscriptionId))
+        else if (!this.id.equals(other.id))
             return false;
         if (this.originCity == null) {
             if (other.originCity != null)
@@ -218,7 +217,7 @@ public class JooqRideSubscription implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.subscriptionId == null) ? 0 : this.subscriptionId.hashCode());
+        result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.originCity == null) ? 0 : this.originCity.hashCode());
         result = prime * result + ((this.destinationCity == null) ? 0 : this.destinationCity.hashCode());
         result = prime * result + ((this.departsOnEarliest == null) ? 0 : this.departsOnEarliest.hashCode());
@@ -232,7 +231,7 @@ public class JooqRideSubscription implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("JooqRideSubscription (");
 
-        sb.append(subscriptionId);
+        sb.append(id);
         sb.append(", ").append(originCity);
         sb.append(", ").append(destinationCity);
         sb.append(", ").append(departsOnEarliest);

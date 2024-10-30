@@ -4,13 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
 public class RideSubscription {
 
-    private final UUID subscriptionId;
+    private final int id;
     private final String originCity;
     private final String destinationCity;
     private final LocalDateTime departsOnEarliest;

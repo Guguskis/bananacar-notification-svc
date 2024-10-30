@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class RideSubscriptionsRepository implements FetchRideSubscriptionsPort {
 
         return List.of(
                 RideSubscription.builder()
-                        .subscriptionId(UUID.randomUUID())
                         .departsOnEarliest(now)
                         .departsOnLatest(now.plusDays(ridesScanProperties.getMaximumDepartureInDays()))
                         .originCity("Vilnius")

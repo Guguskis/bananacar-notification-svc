@@ -5,7 +5,6 @@ package lt.liutikas.bananacar_notification_svc.db.jooq.tables.records;
 
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.RideSubscription;
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.pojos.JooqRideSubscription;
@@ -23,18 +22,18 @@ public class JooqRideSubscriptionRecord extends UpdatableRecordImpl<JooqRideSubs
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.ride_subscription.subscription_id</code>.
+     * Setter for <code>public.ride_subscription.id</code>.
      */
-    public JooqRideSubscriptionRecord setSubscriptionId(UUID value) {
+    public JooqRideSubscriptionRecord setId(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.ride_subscription.subscription_id</code>.
+     * Getter for <code>public.ride_subscription.id</code>.
      */
-    public UUID getSubscriptionId() {
-        return (UUID) get(0);
+    public Integer getId() {
+        return (Integer) get(0);
     }
 
     /**
@@ -132,7 +131,7 @@ public class JooqRideSubscriptionRecord extends UpdatableRecordImpl<JooqRideSubs
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<UUID> key() {
+    public Record1<Integer> key() {
         return (Record1) super.key();
     }
 
@@ -150,10 +149,10 @@ public class JooqRideSubscriptionRecord extends UpdatableRecordImpl<JooqRideSubs
     /**
      * Create a detached, initialised JooqRideSubscriptionRecord
      */
-    public JooqRideSubscriptionRecord(UUID subscriptionId, String originCity, String destinationCity, LocalDateTime departsOnEarliest, LocalDateTime departsOnLatest, LocalDateTime createdOn, LocalDateTime updatedOn) {
+    public JooqRideSubscriptionRecord(Integer id, String originCity, String destinationCity, LocalDateTime departsOnEarliest, LocalDateTime departsOnLatest, LocalDateTime createdOn, LocalDateTime updatedOn) {
         super(RideSubscription.RIDE_SUBSCRIPTION);
 
-        setSubscriptionId(subscriptionId);
+        setId(id);
         setOriginCity(originCity);
         setDestinationCity(destinationCity);
         setDepartsOnEarliest(departsOnEarliest);
@@ -169,7 +168,7 @@ public class JooqRideSubscriptionRecord extends UpdatableRecordImpl<JooqRideSubs
         super(RideSubscription.RIDE_SUBSCRIPTION);
 
         if (value != null) {
-            setSubscriptionId(value.getSubscriptionId());
+            setId(value.getId());
             setOriginCity(value.getOriginCity());
             setDestinationCity(value.getDestinationCity());
             setDepartsOnEarliest(value.getDepartsOnEarliest());

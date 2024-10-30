@@ -5,7 +5,6 @@ package lt.liutikas.bananacar_notification_svc.db.jooq.tables;
 
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import lt.liutikas.bananacar_notification_svc.db.jooq.Keys;
 import lt.liutikas.bananacar_notification_svc.db.jooq.Public;
@@ -47,9 +46,9 @@ public class RideSubscription extends TableImpl<JooqRideSubscriptionRecord> {
     }
 
     /**
-     * The column <code>public.ride_subscription.subscription_id</code>.
+     * The column <code>public.ride_subscription.id</code>.
      */
-    public final TableField<JooqRideSubscriptionRecord, UUID> SUBSCRIPTION_ID = createField(DSL.name("subscription_id"), SQLDataType.UUID.nullable(false), this, "");
+    public final TableField<JooqRideSubscriptionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.ride_subscription.origin_city</code>.

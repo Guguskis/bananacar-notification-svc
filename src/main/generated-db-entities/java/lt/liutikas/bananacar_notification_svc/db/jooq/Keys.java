@@ -27,5 +27,5 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<JooqRideRecord> RIDE_PKEY = Internal.createUniqueKey(Ride.RIDE, DSL.name("ride_pkey"), new TableField[] { Ride.RIDE.ID }, true);
-    public static final UniqueKey<JooqRideSubscriptionRecord> RIDE_SUBSCRIPTION_PKEY = Internal.createUniqueKey(RideSubscription.RIDE_SUBSCRIPTION, DSL.name("ride_subscription_pkey"), new TableField[] { RideSubscription.RIDE_SUBSCRIPTION.SUBSCRIPTION_ID }, true);
+    public static final UniqueKey<JooqRideSubscriptionRecord> RIDE_SUBSCRIPTION_PKEY = Internal.createUniqueKey(RideSubscription.RIDE_SUBSCRIPTION, DSL.name("ride_subscription_pkey"), new TableField[] { RideSubscription.RIDE_SUBSCRIPTION.ID }, true);
 }
