@@ -2,6 +2,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.persistence;
 
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.CreateRideSubscriptionPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.db.jooq.tables.records.JooqRideSubscriptionRecord;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -14,7 +15,10 @@ import static lt.liutikas.bananacar_notification_svc.db.jooq.Tables.RIDE_SUBSCRI
 
 @Repository
 @RequiredArgsConstructor
-public class RideSubscriptionsRepository implements FetchRideSubscriptionsPort, CreateRideSubscriptionPort {
+public class RideSubscriptionsRepository implements
+        FetchRideSubscriptionsPort,
+        CreateRideSubscriptionPort,
+        DeleteRideSubscriptionPort {
 
     private final DSLContext dslContext;
 
@@ -39,6 +43,14 @@ public class RideSubscriptionsRepository implements FetchRideSubscriptionsPort, 
                 .fetchSingle();
 
         return toDomain(persistedRecord);
+    }
+
+    @Override
+    public void delete(int id) {
+
+        dslContext.deleteFrom(RIDE_SUBSCRIPTION)
+                .where(RIDE_SUBSCRIPTION.ID.eq(id))
+                .execute();
     }
 
     private static JooqRideSubscriptionRecord toJooq(RideSubscription rideSubscription) {

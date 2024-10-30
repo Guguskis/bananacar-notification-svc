@@ -3,6 +3,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.web;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCommandType;
 import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordInputException;
+import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.SaveRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -27,10 +28,12 @@ public class DiscordEventService {
     private static final LocalDateTime LOCAL_DATE_TIME_MAX = LocalDateTime.of(3000, 1, 1, 1, 1);
     private static final String OPTION_NAME_FROM = "from";
     private static final String OPTION_NAME_TO = "to";
+    private static final String OPTION_NAME_ID = "id";
 
     private final DiscordApi discordApi;
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
     private final SaveRideSubscriptionPort saveRideSubscriptionPort;
+    private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
 
     @PostConstruct
     public void addDiscordListener() {
@@ -60,13 +63,13 @@ public class DiscordEventService {
         if (subscriptions.isEmpty()) {
 
             interaction.createImmediateResponder()
-                    .setContent("# There are no ride subscriptions, maybe create one?")
+                    .setContent("## There are no ride subscriptions, maybe create one?")
                     .respond();
             return;
         }
 
         InteractionImmediateResponseBuilder responseBuilder = interaction.createImmediateResponder()
-                .setContent("# Listing All Ride Subscriptions")
+                .setContent("## Listing All Ride Subscriptions")
                 .appendNewLine()
                 .appendNewLine();
 
@@ -97,7 +100,7 @@ public class DiscordEventService {
                     .build());
 
             interaction.createImmediateResponder()
-                    .setContent("# Created ride subscription")
+                    .setContent("## Created ride subscription")
                     .appendNewLine()
                     .append(toSubscriptionLine(rideSubscription))
                     .respond();
@@ -112,7 +115,24 @@ public class DiscordEventService {
 
     private void handleDeleteRideSubscription(SlashCommandInteraction interaction) {
 
-        // todo
+        try {
+
+            Long subscriptionId = interaction
+                    .getArgumentLongValueByName(OPTION_NAME_ID)
+                    .orElseThrow(() -> new DiscordInputException("Missing argument [%s]".formatted(OPTION_NAME_ID)));
+
+            deleteRideSubscriptionPort.delete(subscriptionId.intValue());
+
+            interaction.createImmediateResponder()
+                    .setContent("## Deleted ride subscription")
+                    .respond();
+
+        } catch (DiscordInputException e) {
+
+            interaction.createImmediateResponder()
+                    .setContent(e.getMessage())
+                    .respond();
+        }
     }
 
     private static String toSubscriptionLine(RideSubscription subscription) {
@@ -142,7 +162,7 @@ public class DiscordEventService {
 
                                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, DELETE.getLastSubCommand(), "Delete a subscription by ID",
                                                 List.of(
-                                                        SlashCommandOption.create(SlashCommandOptionType.LONG, "id", "Subscription ID", true)
+                                                        SlashCommandOption.create(SlashCommandOptionType.LONG, OPTION_NAME_ID, "Subscription ID", true)
                                                 ))
                                 )
                         )
