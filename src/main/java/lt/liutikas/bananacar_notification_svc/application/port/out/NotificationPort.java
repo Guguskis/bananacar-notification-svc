@@ -1,8 +1,8 @@
 package lt.liutikas.bananacar_notification_svc.application.port.out;
 
-import java.net.URL;
+import lt.liutikas.bananacar_notification_svc.domain.Ride;
 
 public interface NotificationPort {
 
-    void notify(String message, URL bananacarUrl);
+    void notify(Ride ride);
 }

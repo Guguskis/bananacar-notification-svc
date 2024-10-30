@@ -10,14 +10,11 @@ import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscriptionsPort {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
     private final NotificationPort notificationPort;
@@ -34,7 +31,7 @@ public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscript
 
         rides.stream()
                 .filter(ride -> isInterested(subscription, ride))
-                .forEach(this::notify);
+                .forEach(notificationPort::notify);
     }
 
     private boolean isInterested(RideSubscription subscription, Ride ride) {
@@ -62,17 +59,4 @@ public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscript
         return rideNotTooEarly && rideNotTooLate;
     }
 
-    private void notify(Ride ride) {
-
-        String message = "A new ride has appeared from %s to %s with departure on %s"
-                .formatted(
-                        ride.getOrigin().getCity(),
-                        ride.getDestination().getCity(),
-                        ride.getDepartsOn().format(DATE_TIME_FORMATTER)
-                );
-
-        getLogger().info("Sending ride notification [{}]", message);
-
-        notificationPort.notify(message, ride.getBananacarUrl());
-    }
 }
