@@ -2,9 +2,9 @@ package lt.liutikas.bananacar_notification_svc.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lt.liutikas.bananacar_notification_svc.common.StringUtils;
 
 import java.net.URL;
-import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -44,28 +44,23 @@ public class Ride {
 
     private boolean isOrigin(String city) {
 
-        String normalisedCity = removeDiacriticalMarks(city);
+        String normalisedCity = StringUtils.removeDiacriticalMarks(city);
 
         return locations.stream()
                 .map(Location::getCity)
-                .map(this::removeDiacriticalMarks)
+                .map(StringUtils::removeDiacriticalMarks)
                 .anyMatch(l -> l.equalsIgnoreCase(normalisedCity));
     }
 
     private boolean visits(String city) {
 
-        String normalisedCity = removeDiacriticalMarks(city);
+        String normalisedCity = StringUtils.removeDiacriticalMarks(city);
 
         return locations.stream()
                 .filter(l -> l.getType() != LocationType.ORIGIN)
                 .map(Location::getCity)
-                .map(this::removeDiacriticalMarks)
+                .map(StringUtils::removeDiacriticalMarks)
                 .anyMatch(l -> l.equalsIgnoreCase(normalisedCity));
     }
 
-    private String removeDiacriticalMarks(String input) {
-
-        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
-        return normalized.replaceAll("\\p{M}", "");
-    }
 }
