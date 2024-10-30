@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.net.URL;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -43,15 +44,28 @@ public class Ride {
 
     private boolean isOrigin(String city) {
 
+        String normalisedCity = removeDiacriticalMarks(city);
+
         return locations.stream()
-                .filter(l -> l.getType() == LocationType.ORIGIN)
-                .anyMatch(l -> l.getCity().equalsIgnoreCase(city));
+                .map(Location::getCity)
+                .map(this::removeDiacriticalMarks)
+                .anyMatch(l -> l.equalsIgnoreCase(normalisedCity));
     }
 
     private boolean visits(String city) {
 
+        String normalisedCity = removeDiacriticalMarks(city);
+
         return locations.stream()
                 .filter(l -> l.getType() != LocationType.ORIGIN)
-                .anyMatch(l -> l.getCity().equalsIgnoreCase(city));
+                .map(Location::getCity)
+                .map(this::removeDiacriticalMarks)
+                .anyMatch(l -> l.equalsIgnoreCase(normalisedCity));
+    }
+
+    private String removeDiacriticalMarks(String input) {
+
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{M}", "");
     }
 }
