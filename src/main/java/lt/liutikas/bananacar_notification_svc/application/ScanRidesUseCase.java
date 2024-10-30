@@ -3,6 +3,7 @@ package lt.liutikas.bananacar_notification_svc.application;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.SaveRidesPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
@@ -20,7 +21,7 @@ public class ScanRidesUseCase implements Loggable {
     private final FetchLatestRidesPort fetchLatestRidesPort;
     private final FetchRidesByBananacarRideIdPort fetchRidesByBananacarRideIdPort;
     private final SaveRidesPort saveRidesPort;
-    private final NotifySubscriptionsUseCase notifySubscriptionsUseCase;
+    private final NotifyRideSubscriptionsPort notifyRideSubscriptionsPort;
 
     public void scan() {
 
@@ -31,7 +32,7 @@ public class ScanRidesUseCase implements Loggable {
         getLogger().info("Scanned {} new rides", newRides.size());
 
         saveRidesPort.save(newRides);
-        notifySubscriptionsUseCase.notifySubscriptions(newRides);
+        notifyRideSubscriptionsPort.notifySubscriptions(newRides);
 
         getLogger().info("Completed BananaCar ride scan");
     }

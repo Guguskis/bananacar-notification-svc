@@ -3,6 +3,7 @@ package lt.liutikas.bananacar_notification_svc.application;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotificationPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -14,13 +15,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class NotifySubscriptionsUseCase implements Loggable {
+public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscriptionsPort {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
     private final NotificationPort notificationPort;
 
+    @Override
     public void notifySubscriptions(List<Ride> rides) {
 
         fetchRideSubscriptionsPort
