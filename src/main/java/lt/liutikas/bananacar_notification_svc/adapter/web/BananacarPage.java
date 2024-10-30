@@ -12,11 +12,7 @@ import lt.liutikas.bananacar_notification_svc.domain.LocationType;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.core.har.HarEntry;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -26,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,31 +29,51 @@ import java.util.stream.Collectors;
 public class BananacarPage implements Loggable {
 
     private static final String BANANACAR_BASE_URL = "https://bananacar.lt/en";
-    private static final String RIDES_HOME_PAGE_URL = BANANACAR_BASE_URL + "/ride/find";
-    private static final String NEXT_BUTTON_CSS_SELECTOR = "i.mdi.mdi-chevron-right.find__pagination-nav";
+    private static final String RIDE_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?ride_id=%s";
+    private static final String RIDES_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?page=%s";
 
-    private final WebDriver firefoxWebDriver;
+    private final WebDriver webDriver;
     private final BrowserMobProxy proxy;
     private final ObjectMapper objectMapper;
+
+    private int currentPageNumber = 1;
 
     public int navigateToRidesHomePage() {
 
         cleanUpExistingNetworkLogs();
-        firefoxWebDriver.navigate().to(RIDES_HOME_PAGE_URL);
 
-        return 1;
+        currentPageNumber = 1;
+        navigateToPage(currentPageNumber);
+
+        return currentPageNumber;
     }
 
     public int navigateToRidesNextPage() {
 
+        int maxPageNumber = getMaxPageNumber();
+
+        if (currentPageNumber >= maxPageNumber) {
+            getLogger().warn("Cannot navigate to next page, currentPage [{}], maxPage [{}]", currentPageNumber, maxPageNumber);
+            return currentPageNumber;
+        }
+
         cleanUpExistingNetworkLogs();
 
-        WebElement nextButton = firefoxWebDriver.findElement(By.cssSelector(NEXT_BUTTON_CSS_SELECTOR));
+        currentPageNumber++;
+        navigateToPage(currentPageNumber);
 
-        forceWait(Duration.ofMillis(10));
-        String url = clickAndWaitForUrlChange(firefoxWebDriver, nextButton);
+        return currentPageNumber;
+    }
 
-        return extractPageNumber(url);
+    private int getMaxPageNumber() {
+
+        return proxy.getHar().getLog().getEntries().stream()
+                .filter(BananacarPage::isRidesSearchRequest)
+                .map(h -> h.getResponse().getContent().getText())
+                .map(this::parseBananacarRideSearchResponse)
+                .findFirst()
+                .map(BananacarRideSearchResponse::getLastPage)
+                .orElseThrow(() -> new IllegalArgumentException("RidesSearchRequest not found"));
     }
 
     public List<Ride> getRides() {
@@ -81,12 +95,19 @@ public class BananacarPage implements Loggable {
                 .toList();
     }
 
+    private void navigateToPage(int pageNumber) {
+
+        webDriver.navigate().to(RIDES_URL_TEMPLATE.formatted(pageNumber));
+
+        forceWait(Duration.ofMillis(10));
+    }
+
     private Ride toRides(BananacarRide ride) {
 
         try {
 
             List<Location> locations = mapRoute(ride.getLocations());
-            URL bananacarUrl = new URL(BANANACAR_BASE_URL + "/ride/find?ride_id=" + ride.getId());
+            URL bananacarUrl = new URL(RIDE_URL_TEMPLATE.formatted(ride.getId()));
             LocalDateTime departureDatetime = ride.getDepartureDatetime();
 
             return Ride.builder()
@@ -142,48 +163,21 @@ public class BananacarPage implements Loggable {
         return har.getRequest().getUrl().contains("/api/v1/rides/search");
     }
 
+    private BananacarRideSearchResponse parseBananacarRideSearchResponse(String responseBody) {
+
+        try {
+            return objectMapper.readValue(responseBody, BananacarRideSearchResponse.class); // fixme sometimes null
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Failed to parse BananacarRideSearchResponse", e);
+        }
+    }
+
     private void forceWait(Duration timeout) {
 
         try {
             Thread.sleep(timeout.toMillis());
         } catch (InterruptedException e) {
             getLogger().error("Thread sleep error", e);
-        }
-    }
-
-    public Integer extractPageNumber(String url) {
-        try {
-            Pattern pattern = Pattern.compile("page=(\\d+)");
-            Matcher matcher = pattern.matcher(url);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));
-            }
-        } catch (Exception e) {
-            getLogger().warn("Failed to parse page number for [{}]", url, e);
-        }
-
-        return 1;
-    }
-
-    public String clickAndWaitForUrlChange(WebDriver driver, WebElement button) {
-
-        String initialUrl = driver.getCurrentUrl();
-
-        button.click();
-
-        new WebDriverWait(driver, Duration.ofSeconds(10)).until(
-                ExpectedConditions.not(ExpectedConditions.urlToBe(initialUrl))
-        );
-
-        return firefoxWebDriver.getCurrentUrl();
-    }
-
-    private BananacarRideSearchResponse parseBananacarRideSearchResponse(String responseBody) {
-
-        try {
-            return objectMapper.readValue(responseBody, BananacarRideSearchResponse.class);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Failed to parse BananacarRideSearchResponse", e);
         }
     }
 }

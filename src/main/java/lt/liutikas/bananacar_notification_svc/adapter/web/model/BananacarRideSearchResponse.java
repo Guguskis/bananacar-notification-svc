@@ -12,4 +12,8 @@ public class BananacarRideSearchResponse {
 
     @JsonProperty("data")
     private List<BananacarRide> rides;
+
+    @JsonProperty("last_page")
+    private Integer lastPage;
+
 }
