@@ -12,7 +12,7 @@ import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
-public class DiscordService implements NotificationPort {
+public class DiscordNotificationService implements NotificationPort {
 
     private final ServerTextChannel channel;
 

@@ -3,6 +3,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.web;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.ServerTextChannel;
+import org.javacord.api.entity.intent.Intent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class DiscordConfiguration {
 
         return new DiscordApiBuilder()
                 .setToken(discordToken)
+                .addIntents(Intent.MESSAGE_CONTENT)
                 .login()
                 .join();
     }
