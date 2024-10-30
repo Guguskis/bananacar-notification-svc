@@ -17,7 +17,7 @@ class BananacarServiceITest extends ITestBase {
     @Test
     void test() {
 
-        List<Ride> rides = bananacarService.fetch(LocalDateTime.now().plusDays(10));
+        List<Ride> rides = bananacarService.fetch(LocalDateTime.now().plusDays(2));
 
         for (Ride ride : rides) {
             System.out.println(ride);

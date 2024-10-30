@@ -27,7 +27,7 @@ import java.util.List;
 public class BananacarPage implements Loggable {
 
     private static final String BANANACAR_BASE_URL = "https://bananacar.lt/en";
-    private static final String RIDE_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?ride_id=%s";
+    private static final String RIDE_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/%s";
     private static final String RIDES_URL_TEMPLATE = BANANACAR_BASE_URL + "/ride/find?page=%s";
     private static final String RIDES_SEARCH_API_PATH = "/api/v1/rides/search";
 
@@ -100,7 +100,7 @@ public class BananacarPage implements Loggable {
         try {
 
             List<Location> locations = mapRoute(ride.getLocations());
-            URL bananacarUrl = new URL(RIDE_URL_TEMPLATE.formatted(ride.getId()));
+            URL bananacarUrl = new URL(RIDE_URL_TEMPLATE.formatted(ride.getUrl()));
             LocalDateTime departureDatetime = ride.getDepartureDatetime();
 
             return Ride.builder()

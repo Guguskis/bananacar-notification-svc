@@ -13,6 +13,7 @@ import java.util.List;
 public class BananacarRide {
 
     private final String id;
+    private final String url;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("departure_datetime")
