@@ -1,5 +1,6 @@
 package lt.liutikas.bananacar_notification_svc.adapter.web;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCommandType;
 import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordInputException;
@@ -11,6 +12,8 @@ import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.*;
+import org.javacord.api.listener.interaction.SlashCommandCreateListener;
+import org.javacord.api.util.event.ListenerManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +38,7 @@ public class DiscordEventService implements Loggable {
     private final SaveRideSubscriptionPort saveRideSubscriptionPort;
     private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
     private final DiscordNotificationService discordNotificationService;
+    private ListenerManager<SlashCommandCreateListener> listenerManager;
 
     @PostConstruct
     public void addDiscordListener() {
@@ -42,7 +46,13 @@ public class DiscordEventService implements Loggable {
         SlashCommandBuilder command = getRidesSubscriptionsCommandBuilder();
 
         discordApi.bulkOverwriteGlobalApplicationCommands(Set.of(command)).join();
-        discordApi.addSlashCommandCreateListener(this::processMessage);
+        listenerManager = discordApi.addSlashCommandCreateListener(this::processMessage);
+    }
+
+    @PreDestroy
+    public void removeDiscordListener() {
+
+        listenerManager.remove();
     }
 
     private void processMessage(SlashCommandCreateEvent event) {
