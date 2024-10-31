@@ -6,6 +6,7 @@ import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordInputExce
 import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.SaveRideSubscriptionPort;
+import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
@@ -22,7 +23,7 @@ import static lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCo
 
 @Service
 @RequiredArgsConstructor
-public class DiscordEventService {
+public class DiscordEventService implements Loggable {
 
     private static final LocalDateTime LOCAL_DATE_TIME_MIN = LocalDateTime.of(2000, 1, 1, 1, 1);
     private static final LocalDateTime LOCAL_DATE_TIME_MAX = LocalDateTime.of(3000, 1, 1, 1, 1);
@@ -120,6 +121,8 @@ public class DiscordEventService {
             Long subscriptionId = interaction
                     .getArgumentLongValueByName(OPTION_NAME_ID)
                     .orElseThrow(() -> new DiscordInputException("Missing argument [%s]".formatted(OPTION_NAME_ID)));
+
+            getLogger().info("Deleting ride subscription id [{}]", subscriptionId);
 
             deleteRideSubscriptionPort.delete(subscriptionId.intValue());
 

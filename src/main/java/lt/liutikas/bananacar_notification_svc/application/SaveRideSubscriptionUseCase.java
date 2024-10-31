@@ -43,7 +43,7 @@ public class SaveRideSubscriptionUseCase implements Loggable, SaveRideSubscripti
                         .build()
         );
 
-        getLogger().info("Saved ride subscription from [{}] to [{}] with id [{}]",
+        getLogger().info("Created ride subscription from [{}] to [{}] with id [{}]",
                 rideSubscription.getOriginCity(),
                 rideSubscription.getDestinationCity(),
                 rideSubscription.getId());
