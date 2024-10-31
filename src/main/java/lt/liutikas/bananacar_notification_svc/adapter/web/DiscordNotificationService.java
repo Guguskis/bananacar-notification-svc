@@ -23,10 +23,10 @@ import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageF
 @RequiredArgsConstructor
 public class DiscordNotificationService implements Loggable, NotificationPort {
 
-    private static final String HEADER_SUBSCRIPTIONS_LIST = "## Listing All Ride Subscriptions\n";
-    private static final String HEADER_SUBSCRIPTION_CREATED = "## Created Ride Subscription\n";
-    private static final String HEADER_SUBSCRIPTION_DELETED = "## Deleted Ride Subscription\n";
-    private static final String HEADER_RIDE_CREATED = "## New ride appeared\n";
+    private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
+    private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";
+    private static final String HEADER_SUBSCRIPTION_DELETED = "Deleted Ride Subscription\n";
+    private static final String HEADER_RIDE_CREATED = "New ride appeared\n";
     private static final String RESPONSE_SUBSCRIPTIONS_EMPTY = "There are no ride subscriptions, maybe create one?";
     private static final String RESPONSE_SUBSCRIPTION_NOT_FOUND = "Subscription not found";
 
@@ -37,18 +37,20 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
 
         getLogger().info("Sending new ride notification");
 
-        String pushNotificationContent = formatPushNotification(ride);
-        String decoratedMessageContent = formatDecoratedMessage(ride);
-
         new MessageBuilder()
                 .addComponents(linkButton(ride.getBananacarUrl()))
-                .setContent(HEADER_RIDE_CREATED + pushNotificationContent)
+                .setContent(HEADER_RIDE_CREATED + formatPushNotification(ride))
                 .send(channel)
                 .thenAcceptAsync(action -> action
-                        .edit(HEADER_RIDE_CREATED + decoratedMessageContent)
+                        .edit(appendHeader(HEADER_RIDE_CREATED) + formatDecoratedMessage(ride))
                         .join()
                 )
                 .join();
+    }
+
+    private String appendHeader(String text) {
+
+        return "## " + text;
     }
 
     public void respondEmptySubscriptions(SlashCommandInteraction interaction) {
@@ -56,7 +58,13 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
         interaction.createImmediateResponder()
                 .setContent(HEADER_SUBSCRIPTIONS_LIST)
                 .append(RESPONSE_SUBSCRIPTIONS_EMPTY)
-                .respond();
+                .respond()
+                .thenAcceptAsync(message -> message
+                        .setContent(appendHeader(HEADER_SUBSCRIPTIONS_LIST))
+                        .append(RESPONSE_SUBSCRIPTIONS_EMPTY)
+                        .update()
+                        .join())
+                .join();
     }
 
     public void respondListSubscriptions(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
@@ -68,7 +76,7 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
                         .collect(Collectors.joining()))
                 .respond()
                 .thenAcceptAsync(message -> message
-                        .setContent(HEADER_SUBSCRIPTIONS_LIST)
+                        .setContent(appendHeader(HEADER_SUBSCRIPTIONS_LIST))
                         .append(subscriptions.stream()
                                 .map(DiscordMessageFormatter::formatDecoratedMessage)
                                 .collect(Collectors.joining()))
@@ -84,7 +92,7 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
                 .append(formatPushNotification(rideSubscription))
                 .respond()
                 .thenAcceptAsync(action -> action
-                        .setContent(HEADER_SUBSCRIPTION_CREATED)
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_CREATED))
                         .append(formatDecoratedMessage(rideSubscription))
                         .update()
                         .join())
@@ -96,7 +104,13 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
         interaction.createImmediateResponder()
                 .setContent(HEADER_SUBSCRIPTION_DELETED)
                 .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
-                .respond();
+                .respond()
+                .thenAcceptAsync(action -> action
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
+                        .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
+                        .update()
+                        .join())
+                .join();
     }
 
     public void respondDeletedSubscription(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
@@ -106,7 +120,7 @@ public class DiscordNotificationService implements Loggable, NotificationPort {
                 .append(formatPushNotification(rideSubscription))
                 .respond()
                 .thenAcceptAsync(action -> action
-                        .setContent(HEADER_SUBSCRIPTION_DELETED)
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
                         .append(formatDecoratedMessage(rideSubscription))
                         .update()
                         .join())
