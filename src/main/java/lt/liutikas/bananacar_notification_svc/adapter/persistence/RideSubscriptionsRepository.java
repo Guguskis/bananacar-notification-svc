@@ -10,6 +10,7 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static lt.liutikas.bananacar_notification_svc.db.jooq.Tables.RIDE_SUBSCRIPTION;
 
@@ -46,11 +47,13 @@ public class RideSubscriptionsRepository implements
     }
 
     @Override
-    public void delete(int id) {
+    public Optional<RideSubscription> delete(int id) {
 
-        dslContext.deleteFrom(RIDE_SUBSCRIPTION)
+        return dslContext.deleteFrom(RIDE_SUBSCRIPTION)
                 .where(RIDE_SUBSCRIPTION.ID.eq(id))
-                .execute();
+                .returning()
+                .fetchOptional()
+                .map(RideSubscriptionsRepository::toDomain);
     }
 
     private static JooqRideSubscriptionRecord toJooq(RideSubscription rideSubscription) {

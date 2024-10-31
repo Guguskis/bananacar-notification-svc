@@ -11,7 +11,6 @@ import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.*;
-import org.javacord.api.interaction.callback.InteractionImmediateResponseBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +34,7 @@ public class DiscordEventService implements Loggable {
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
     private final SaveRideSubscriptionPort saveRideSubscriptionPort;
     private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
+    private final DiscordNotificationService discordNotificationService;
 
     @PostConstruct
     public void addDiscordListener() {
@@ -62,23 +62,10 @@ public class DiscordEventService implements Loggable {
         List<RideSubscription> subscriptions = fetchRideSubscriptionsPort.fetch();
 
         if (subscriptions.isEmpty()) {
-
-            interaction.createImmediateResponder()
-                    .setContent("## There are no ride subscriptions, maybe create one?")
-                    .respond();
-            return;
+            discordNotificationService.respondEmptySubscriptions(interaction);
+        } else {
+            discordNotificationService.respondListSubscriptions(interaction, subscriptions);
         }
-
-        InteractionImmediateResponseBuilder responseBuilder = interaction.createImmediateResponder()
-                .setContent("## Listing All Ride Subscriptions")
-                .appendNewLine()
-                .appendNewLine();
-
-        subscriptions.stream()
-                .map(DiscordEventService::toSubscriptionLine)
-                .forEach(line -> responseBuilder.append(line).appendNewLine().appendNewLine());
-
-        responseBuilder.respond();
     }
 
     private void handleCreateRideSubscription(SlashCommandInteraction interaction) {
@@ -100,11 +87,7 @@ public class DiscordEventService implements Loggable {
                     .departsOnLatest(LOCAL_DATE_TIME_MAX)
                     .build());
 
-            interaction.createImmediateResponder()
-                    .setContent("## Created ride subscription")
-                    .appendNewLine()
-                    .append(toSubscriptionLine(rideSubscription))
-                    .respond();
+            discordNotificationService.respondCreatedSubscription(interaction, rideSubscription);
 
         } catch (DiscordInputException e) {
 
@@ -124,28 +107,18 @@ public class DiscordEventService implements Loggable {
 
             getLogger().info("Deleting ride subscription id [{}]", subscriptionId);
 
-            deleteRideSubscriptionPort.delete(subscriptionId.intValue());
-
-            interaction.createImmediateResponder()
-                    .setContent("## Deleted ride subscription")
-                    .respond();
+            deleteRideSubscriptionPort.delete(subscriptionId.intValue())
+                    .ifPresentOrElse(
+                            subscription -> discordNotificationService.respondDeletedSubscription(interaction, subscription),
+                            () -> discordNotificationService.respondDeletedSubscription(interaction)
+                    );
 
         } catch (DiscordInputException e) {
 
             interaction.createImmediateResponder()
-                    .setContent(e.getMessage())
+                    .setContent("Error: %s".formatted(e.getMessage()))
                     .respond();
         }
-    }
-
-    private static String toSubscriptionLine(RideSubscription subscription) {
-
-        return "> **ID**: `%s`\n> **From**: %s\n> **To**: %s"
-                .formatted(
-                        subscription.getId(),
-                        subscription.getOriginCity(),
-                        subscription.getDestinationCity()
-                );
     }
 
     private SlashCommandBuilder getRidesSubscriptionsCommandBuilder() {
