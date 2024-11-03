@@ -2,8 +2,8 @@ package lt.liutikas.bananacar_notification_svc.application;
 
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.NotificationPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyRideSubscriptionsPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyNewRidePort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.NotifySubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -14,13 +14,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscriptionsPort {
+public class NotifySubscriptionsUseCase implements Loggable, NotifySubscriptionsPort {
 
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
-    private final NotificationPort notificationPort;
+    private final NotifyNewRidePort notifyNewRidePort;
 
     @Override
-    public void notifySubscriptions(List<Ride> rides) {
+    public void notify(List<Ride> rides) {
 
         fetchRideSubscriptionsPort
                 .fetch()
@@ -31,7 +31,7 @@ public class NotifySubscriptionsUseCase implements Loggable, NotifyRideSubscript
 
         rides.stream()
                 .filter(ride -> isInterested(subscription, ride))
-                .forEach(notificationPort::notify);
+                .forEach(notifyNewRidePort::notify);
     }
 
     private boolean isInterested(RideSubscription subscription, Ride ride) {

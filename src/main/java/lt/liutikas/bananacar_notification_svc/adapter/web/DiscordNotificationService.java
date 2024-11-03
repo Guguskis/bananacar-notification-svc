@@ -1,7 +1,7 @@
 package lt.liutikas.bananacar_notification_svc.adapter.web;
 
 import lombok.RequiredArgsConstructor;
-import lt.liutikas.bananacar_notification_svc.application.port.out.NotificationPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyNewRidePort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -21,7 +21,7 @@ import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageF
 
 @Service
 @RequiredArgsConstructor
-public class DiscordNotificationService implements Loggable, NotificationPort {
+public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
 
     private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
     private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";

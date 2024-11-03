@@ -4,7 +4,7 @@ import lt.liutikas.bananacar_notification_svc.domain.Ride;
 
 import java.util.List;
 
-public interface NotifyRideSubscriptionsPort {
+public interface NotifySubscriptionsPort {
 
-    void notifySubscriptions(List<Ride> rides);
+    void notify(List<Ride> rides);
 }
