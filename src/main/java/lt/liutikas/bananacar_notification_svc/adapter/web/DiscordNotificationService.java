@@ -1,7 +1,7 @@
 package lt.liutikas.bananacar_notification_svc.adapter.web;
 
 import lombok.RequiredArgsConstructor;
-import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyNewRidePort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.*;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
@@ -21,7 +21,13 @@ import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageF
 
 @Service
 @RequiredArgsConstructor
-public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
+public class DiscordNotificationService implements
+        Loggable,
+        NotifyNewRidePort,
+        RespondListSubscriptionsPort,
+        RespondCreatedSubscriptionPort,
+        RespondDeletedSubscription,
+        RespondDeletedSubscriptionNotFoundPort {
 
     private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
     private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";
@@ -48,12 +54,63 @@ public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
                 .join();
     }
 
-    private String appendHeader(String text) {
+    @Override
+    public void respondList(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
 
-        return "## " + text;
+        if (subscriptions.isEmpty()) {
+            respondListSubscriptionsEmpty(interaction);
+        } else {
+            respondListSubscriptions(interaction, subscriptions);
+        }
     }
 
-    public void respondEmptySubscriptions(SlashCommandInteraction interaction) {
+    @Override
+    public void respondCreated(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
+
+        interaction.createImmediateResponder()
+                .setContent(HEADER_SUBSCRIPTION_CREATED)
+                .append(formatPushNotification(rideSubscription))
+                .respond()
+                .thenAcceptAsync(action -> action
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_CREATED))
+                        .append(formatDecoratedMessage(rideSubscription))
+                        .update()
+                        .join())
+                .join();
+    }
+
+    @Override
+    public void respondDeleted(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
+
+        interaction.createImmediateResponder()
+                .setContent(HEADER_SUBSCRIPTION_DELETED)
+                .append(formatPushNotification(rideSubscription))
+                .respond()
+                .thenAcceptAsync(action -> action
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
+                        .append(formatDecoratedMessage(rideSubscription))
+                        .update()
+                        .join())
+                .join();
+
+    }
+
+    @Override
+    public void respondDeletedNotFound(SlashCommandInteraction interaction) {
+
+        interaction.createImmediateResponder()
+                .setContent(HEADER_SUBSCRIPTION_DELETED)
+                .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
+                .respond()
+                .thenAcceptAsync(action -> action
+                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
+                        .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
+                        .update()
+                        .join())
+                .join();
+    }
+
+    private void respondListSubscriptionsEmpty(SlashCommandInteraction interaction) {
 
         interaction.createImmediateResponder()
                 .setContent(HEADER_SUBSCRIPTIONS_LIST)
@@ -67,7 +124,7 @@ public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
                 .join();
     }
 
-    public void respondListSubscriptions(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
+    private void respondListSubscriptions(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
 
         interaction.createImmediateResponder()
                 .setContent(HEADER_SUBSCRIPTIONS_LIST)
@@ -85,47 +142,9 @@ public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
                 .join();
     }
 
-    public void respondCreatedSubscription(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
+    private String appendHeader(String text) {
 
-        interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_CREATED)
-                .append(formatPushNotification(rideSubscription))
-                .respond()
-                .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_CREATED))
-                        .append(formatDecoratedMessage(rideSubscription))
-                        .update()
-                        .join())
-                .join();
-    }
-
-    public void respondDeletedSubscription(SlashCommandInteraction interaction) {
-
-        interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_DELETED)
-                .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
-                .respond()
-                .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
-                        .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
-                        .update()
-                        .join())
-                .join();
-    }
-
-    public void respondDeletedSubscription(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
-
-        interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_DELETED)
-                .append(formatPushNotification(rideSubscription))
-                .respond()
-                .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
-                        .append(formatDecoratedMessage(rideSubscription))
-                        .update()
-                        .join())
-                .join();
-
+        return "## " + text;
     }
 
     private static ActionRow linkButton(URL url) {
