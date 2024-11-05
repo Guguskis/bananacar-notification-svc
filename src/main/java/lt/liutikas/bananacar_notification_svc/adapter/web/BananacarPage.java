@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +71,11 @@ public class BananacarPage implements Loggable {
         return proxy.getHar().getLog().getEntries().stream()
                 .filter(BananacarPage::isRidesSearchRequest)
                 .map(h -> h.getResponse().getContent().getText())
+                .peek(response -> {
+                    if (response == null) {
+                        getLogger().warn("Cannot getRides because RidesSearchResponse is null");
+                    }
+                })
                 .map(this::parseBananacarRideSearchResponse)
                 .map(BananacarRideSearchResponse::getRides)
                 .flatMap(Collection::stream)
@@ -82,10 +88,11 @@ public class BananacarPage implements Loggable {
         return proxy.getHar().getLog().getEntries().stream()
                 .filter(BananacarPage::isRidesSearchRequest)
                 .map(h -> h.getResponse().getContent().getText())
-                .map(this::parseBananacarRideSearchResponse)
+                .filter(Objects::nonNull)
                 .findFirst()
+                .map(this::parseBananacarRideSearchResponse)
                 .map(BananacarRideSearchResponse::getLastPage)
-                .orElseThrow(() -> new IllegalArgumentException("RidesSearchRequest not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Cannot getMaxPageNumber because RidesSearchResponse is null"));
     }
 
     private void navigateToPage(int pageNumber) {
