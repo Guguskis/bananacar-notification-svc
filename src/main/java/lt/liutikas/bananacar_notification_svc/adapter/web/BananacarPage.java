@@ -76,6 +76,7 @@ public class BananacarPage implements Loggable {
                         getLogger().warn("Cannot getRides because RidesSearchResponse is null");
                     }
                 })
+                .filter(Objects::nonNull)
                 .map(this::parseBananacarRideSearchResponse)
                 .map(BananacarRideSearchResponse::getRides)
                 .flatMap(Collection::stream)
