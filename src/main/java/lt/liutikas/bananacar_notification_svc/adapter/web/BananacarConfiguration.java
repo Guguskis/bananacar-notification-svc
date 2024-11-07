@@ -16,16 +16,36 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PreDestroy;
 import java.net.URL;
 import java.time.Duration;
 
 @Configuration
 public class BananacarConfiguration implements Loggable {
 
+    private RemoteWebDriver remoteWebDriver;
+    private BrowserMobProxyServer proxy;
+
+    @PreDestroy
+    public void closeWebDriver() {
+
+        if (proxy != null) {
+            proxy.stop();
+        }
+
+        if (remoteWebDriver != null) {
+            try {
+                remoteWebDriver.quit();
+            } catch (Exception e) {
+                // silently
+            }
+        }
+    }
+
     @Bean
     public BrowserMobProxy browserMobProxy() {
 
-        BrowserMobProxyServer proxy = new BrowserMobProxyServer();
+        proxy = new BrowserMobProxyServer();
 
         proxy.enableHarCaptureTypes(
                 CaptureType.RESPONSE_CONTENT,
@@ -65,7 +85,9 @@ public class BananacarConfiguration implements Loggable {
 
         FirefoxOptions options = buildFirefoxOptions(proxy);
 
-        return new RemoteWebDriver(seleniumFirefoxUrl, options);
+        remoteWebDriver = new RemoteWebDriver(seleniumFirefoxUrl, options, false);
+
+        return remoteWebDriver;
     }
 
     @ConditionalOnProperty(value = "selenium.proxy.mode", havingValue = "DOCKER")
@@ -80,7 +102,9 @@ public class BananacarConfiguration implements Loggable {
         Proxy proxy = ClientUtil.createSeleniumProxy(browserMobProxy);
         FirefoxOptions options = buildFirefoxOptions(proxy);
 
-        return new RemoteWebDriver(seleniumFirefoxUrl, options, false);
+        remoteWebDriver = new RemoteWebDriver(seleniumFirefoxUrl, options, false);
+
+        return remoteWebDriver;
     }
 
     private static FirefoxOptions buildFirefoxOptions(Proxy proxy) {
