@@ -1,4 +1,4 @@
--- liquibase formatted sql
+-- liquibase formatted sql logicalFilePath:202410292211_create_table_ride_subscription.sql
 
 -- changeset admin:202410292211_create_table_ride_subscription
 

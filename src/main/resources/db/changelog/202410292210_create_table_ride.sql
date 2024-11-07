@@ -1,4 +1,4 @@
--- liquibase formatted sql
+-- liquibase formatted sql logicalFilePath:202410292210_create_table_ride.sql
 
 -- changeset admin:202410292210_create_table_ride runInTransaction:false
 
