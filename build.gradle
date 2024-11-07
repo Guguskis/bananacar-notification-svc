@@ -109,3 +109,16 @@ sourceSets {
 dependencies {
     jooqGenerator sourceSets.main.output
 }
+
+jar {
+    archiveBaseName.set("app")
+    archiveVersion.set("")
+}
+
+tasks.named("bootJar") {
+    enabled = true
+}
+
+tasks.named("jar") {
+    enabled = false  // Disable the plain JAR task
+}

@@ -17,15 +17,16 @@ information:
 
 ## Set up
 
-1. Make sure to set up properties
+1. Make sure to set up secrets
 
 ```properties
 discord.channelId=replace-secret
 discord.token=replace-secret
 ```
 
-2. Start database `docker compose up -d`
-3. Run the application
+2. Run `docker build -t bananacar-notification-svc -f Dockerfile .`
+3. Start full application stack `docker compose up -d`
+4. Run the application
 
 ## Schema changes
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:17
@@ -13,10 +11,30 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - postgres_network
+      - bananacar-network
+
+  spring-app:
+    image: bananacar-notification-svc
+    container_name: bananacar-notification-svc-app
+    depends_on:
+      - postgres
+      - selenium
+    networks:
+      - bananacar-network
+
+  selenium:
+    image: selenium/standalone-firefox
+    container_name: selenium-firefox
+    environment:
+      SE_ENABLE_TRACING: false
+    ports:
+      - "4444:4444"
+    shm_size: 2g
+    networks:
+      - bananacar-network
 
 volumes:
   postgres_data:
 
 networks:
-  postgres_network:
+  bananacar-network:

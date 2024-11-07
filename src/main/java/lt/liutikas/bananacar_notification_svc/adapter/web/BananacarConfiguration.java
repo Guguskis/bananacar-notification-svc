@@ -1,5 +1,6 @@
 package lt.liutikas.bananacar_notification_svc.adapter.web;
 
+import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -9,13 +10,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.URL;
 import java.time.Duration;
 
 @Configuration
-public class BananacarConfiguration {
+public class BananacarConfiguration implements Loggable {
 
     @Bean
     public BrowserMobProxy browserMobProxy() {
@@ -33,19 +38,62 @@ public class BananacarConfiguration {
         return proxy;
     }
 
+    @ConditionalOnProperty(value = "selenium.proxy.mode", havingValue = "LOCAL", matchIfMissing = true)
     @Bean
-    public WebDriver firefoxWebDriver(BrowserMobProxy browserMobProxy) {
+    public WebDriver firefoxWebDriverLocal(BrowserMobProxy browserMobProxy) {
+
+        getLogger().info("Creating local Firefox web driver");
 
         Proxy proxy = ClientUtil.createSeleniumProxy(browserMobProxy);
+        FirefoxOptions options = buildFirefoxOptions(proxy);
+
+        return new FirefoxDriver(options);
+    }
+
+    @ConditionalOnProperty(value = "selenium.proxy.mode", havingValue = "LOCAL_TO_DOCKER")
+    @Bean
+    public WebDriver firefoxWebDriverLocalToDocker(
+            @Value("${selenium.firefox.url}") URL seleniumFirefoxUrl,
+            BrowserMobProxy browserMobProxy
+    ) {
+
+        getLogger().info("Creating local-to-remote Firefox web driver");
+
+        Proxy proxy = ClientUtil.createSeleniumProxy(browserMobProxy);
+        proxy.setHttpProxy("host.docker.internal:" + browserMobProxy.getPort());
+        proxy.setSslProxy("host.docker.internal:" + browserMobProxy.getPort());
+
+        FirefoxOptions options = buildFirefoxOptions(proxy);
+
+        return new RemoteWebDriver(seleniumFirefoxUrl, options);
+    }
+
+    @ConditionalOnProperty(value = "selenium.proxy.mode", havingValue = "DOCKER")
+    @Bean
+    public WebDriver firefoxWebDriverDocker(
+            @Value("${selenium.firefox.url}") URL seleniumFirefoxUrl,
+            BrowserMobProxy browserMobProxy
+    ) {
+
+        getLogger().info("Creating docker Firefox web driver");
+
+        Proxy proxy = ClientUtil.createSeleniumProxy(browserMobProxy);
+        FirefoxOptions options = buildFirefoxOptions(proxy);
+
+        return new RemoteWebDriver(seleniumFirefoxUrl, options);
+    }
+
+    private static FirefoxOptions buildFirefoxOptions(Proxy proxy) {
 
         FirefoxOptions options = new FirefoxOptions();
 
         options.setProfile(new FirefoxProfile());
         options.setProxy(proxy);
+        options.setAcceptInsecureCerts(true);
         options.setImplicitWaitTimeout(Duration.ofSeconds(5));
         options.addPreference("network.http.accept-encoding.secure", "gzip, deflate");
         options.addPreference("network.http.accept-encoding", "gzip, deflate");
 
-        return new FirefoxDriver(options);
+        return options;
     }
 }
