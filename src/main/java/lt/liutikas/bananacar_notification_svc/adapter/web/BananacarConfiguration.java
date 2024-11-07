@@ -80,7 +80,7 @@ public class BananacarConfiguration implements Loggable {
         Proxy proxy = ClientUtil.createSeleniumProxy(browserMobProxy);
         FirefoxOptions options = buildFirefoxOptions(proxy);
 
-        return new RemoteWebDriver(seleniumFirefoxUrl, options);
+        return new RemoteWebDriver(seleniumFirefoxUrl, options, false);
     }
 
     private static FirefoxOptions buildFirefoxOptions(Proxy proxy) {

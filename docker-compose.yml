@@ -14,7 +14,7 @@ services:
       - bananacar-network
 
   spring-app:
-    image: bananacar-notification-svc
+    image: bananacar-notification-svc:latest
     container_name: bananacar-notification-svc-app
     depends_on:
       - postgres
