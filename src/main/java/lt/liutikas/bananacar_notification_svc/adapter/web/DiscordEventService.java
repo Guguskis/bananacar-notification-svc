@@ -6,11 +6,11 @@ import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCommandTy
 import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordInputException;
 import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
-import lt.liutikas.bananacar_notification_svc.application.port.in.SaveRideSubscriptionPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondCreatedSubscriptionPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondDeletedSubscription;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondDeletedSubscriptionNotFoundPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondListSubscriptionsPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.SaveUniqueRideSubscriptionPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionCreatedPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionDeletedPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionListPort;
+import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionNotFoundPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
@@ -39,12 +39,12 @@ public class DiscordEventService implements Loggable {
 
     private final DiscordApi discordApi;
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
-    private final SaveRideSubscriptionPort saveRideSubscriptionPort;
+    private final SaveUniqueRideSubscriptionPort saveUniqueRideSubscriptionPort;
     private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
-    private final RespondListSubscriptionsPort respondListSubscriptionsPort;
-    private final RespondCreatedSubscriptionPort respondCreatedSubscriptionPort;
-    private final RespondDeletedSubscription respondDeletedSubscriptionPort;
-    private final RespondDeletedSubscriptionNotFoundPort respondDeletedSubscriptionNotFoundPort;
+    private final RespondSubscriptionListPort respondSubscriptionListPort;
+    private final RespondSubscriptionCreatedPort respondSubscriptionCreatedPort;
+    private final RespondSubscriptionDeletedPort respondSubscriptionDeletedPortPort;
+    private final RespondSubscriptionNotFoundPort respondSubscriptionNotFoundPort;
 
     private ListenerManager<SlashCommandCreateListener> listenerManager;
 
@@ -79,7 +79,7 @@ public class DiscordEventService implements Loggable {
 
         List<RideSubscription> subscriptions = fetchRideSubscriptionsPort.fetch();
 
-        respondListSubscriptionsPort.respondList(interaction, subscriptions);
+        respondSubscriptionListPort.respondList(interaction, subscriptions);
     }
 
     private void handleCreateRideSubscription(SlashCommandInteraction interaction) {
@@ -94,14 +94,14 @@ public class DiscordEventService implements Loggable {
                     .getArgumentStringRepresentationValueByName(OPTION_NAME_TO)
                     .orElseThrow(() -> new DiscordInputException("Null option [%s]".formatted(OPTION_NAME_TO)));
 
-            RideSubscription rideSubscription = saveRideSubscriptionPort.create(SaveRideSubscriptionPort.CreateCommand.builder()
+            RideSubscription rideSubscription = saveUniqueRideSubscriptionPort.create(SaveUniqueRideSubscriptionPort.CreateCommand.builder()
                     .originCity(originCity)
                     .destinationCity(destinationCity)
                     .departsOnEarliest(LOCAL_DATE_TIME_MIN)
                     .departsOnLatest(LOCAL_DATE_TIME_MAX)
                     .build());
 
-            respondCreatedSubscriptionPort.respondCreated(interaction, rideSubscription);
+            respondSubscriptionCreatedPort.respondCreated(interaction, rideSubscription);
 
         } catch (DiscordInputException e) {
 
@@ -123,8 +123,8 @@ public class DiscordEventService implements Loggable {
 
             deleteRideSubscriptionPort.delete(subscriptionId.intValue())
                     .ifPresentOrElse(
-                            subscription -> respondDeletedSubscriptionPort.respondDeleted(interaction, subscription),
-                            () -> respondDeletedSubscriptionNotFoundPort.respondDeletedNotFound(interaction)
+                            subscription -> respondSubscriptionDeletedPortPort.respondDeleted(interaction, subscription),
+                            () -> respondSubscriptionNotFoundPort.respondDeletedNotFound(interaction)
                     );
 
         } catch (DiscordInputException e) {

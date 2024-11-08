@@ -24,10 +24,10 @@ import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageF
 public class DiscordNotificationService implements
         Loggable,
         NotifyNewRidePort,
-        RespondListSubscriptionsPort,
-        RespondCreatedSubscriptionPort,
-        RespondDeletedSubscription,
-        RespondDeletedSubscriptionNotFoundPort {
+        RespondSubscriptionListPort,
+        RespondSubscriptionCreatedPort,
+        RespondSubscriptionDeletedPort,
+        RespondSubscriptionNotFoundPort {
 
     private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
     private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";

@@ -3,7 +3,7 @@ package lt.liutikas.bananacar_notification_svc.application;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.CreateRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
-import lt.liutikas.bananacar_notification_svc.application.port.in.SaveRideSubscriptionPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.SaveUniqueRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,10 @@ import static lt.liutikas.bananacar_notification_svc.common.StringUtils.removeDi
 
 @Service
 @RequiredArgsConstructor
-public class SaveRideSubscriptionUseCase implements Loggable, SaveRideSubscriptionPort {
+public class SaveUniqueRideSubscriptionUseCase implements Loggable, SaveUniqueRideSubscriptionPort {
 
     private final FetchRideSubscriptionsPort fetchRideSubscriptionsPort;
-    private final CreateRideSubscriptionPort createRideSubscriptionPort; // fixme bad design, I have Save and Create Ports
+    private final CreateRideSubscriptionPort createRideSubscriptionPort;
 
     @Override
     public RideSubscription create(CreateCommand command) {

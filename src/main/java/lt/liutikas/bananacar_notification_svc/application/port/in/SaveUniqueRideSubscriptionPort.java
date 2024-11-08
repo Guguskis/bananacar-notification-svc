@@ -6,7 +6,7 @@ import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 
 import java.time.LocalDateTime;
 
-public interface SaveRideSubscriptionPort {
+public interface SaveUniqueRideSubscriptionPort {
 
     RideSubscription create(CreateCommand command);
 
