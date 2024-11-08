@@ -3,7 +3,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.web.bananacar;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.adapter.web.bananacar.model.BananacarPage;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import org.springframework.stereotype.Service;
 

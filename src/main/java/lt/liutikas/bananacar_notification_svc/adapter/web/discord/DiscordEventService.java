@@ -11,7 +11,7 @@ import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscr
 import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionDeletedPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionListPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionNotFoundPort;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;

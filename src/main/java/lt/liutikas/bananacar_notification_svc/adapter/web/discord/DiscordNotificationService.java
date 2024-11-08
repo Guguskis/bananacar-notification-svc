@@ -2,7 +2,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.web.discord;
 
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.out.*;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.entity.channel.ServerTextChannel;

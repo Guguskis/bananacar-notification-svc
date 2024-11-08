@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.config;
+package lt.liutikas.bananacar_notification_svc.common.properties;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

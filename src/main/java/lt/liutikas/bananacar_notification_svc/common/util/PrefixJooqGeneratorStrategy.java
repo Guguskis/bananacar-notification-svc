@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.common;
+package lt.liutikas.bananacar_notification_svc.common.util;
 
 import org.jooq.codegen.DefaultGeneratorStrategy;
 import org.jooq.meta.Definition;

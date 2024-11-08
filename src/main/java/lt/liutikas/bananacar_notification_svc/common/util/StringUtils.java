@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.common;
+package lt.liutikas.bananacar_notification_svc.common.util;
 
 import java.text.Normalizer;
 

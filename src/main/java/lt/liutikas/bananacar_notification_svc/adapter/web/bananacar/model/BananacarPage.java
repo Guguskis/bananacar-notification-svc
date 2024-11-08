@@ -3,7 +3,7 @@ package lt.liutikas.bananacar_notification_svc.adapter.web.bananacar.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Location;
 import lt.liutikas.bananacar_notification_svc.domain.LocationType;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;

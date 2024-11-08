@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.CreateRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.SaveUniqueRideSubscriptionPort;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static lt.liutikas.bananacar_notification_svc.common.StringUtils.removeDiacriticalMarks;
+import static lt.liutikas.bananacar_notification_svc.common.util.StringUtils.removeDiacriticalMarks;
 
 @Service
 @RequiredArgsConstructor

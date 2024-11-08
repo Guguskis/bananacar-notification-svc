@@ -2,7 +2,7 @@ package lt.liutikas.bananacar_notification_svc.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lt.liutikas.bananacar_notification_svc.common.StringUtils;
+import lt.liutikas.bananacar_notification_svc.common.util.StringUtils;
 
 import java.net.URL;
 import java.time.LocalDateTime;

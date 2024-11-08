@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifyNewRidePort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifySubscriptionsPort;
-import lt.liutikas.bananacar_notification_svc.common.Loggable;
+import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Component;
