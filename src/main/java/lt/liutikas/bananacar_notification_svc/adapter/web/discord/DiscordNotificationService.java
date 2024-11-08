@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web;
+package lt.liutikas.bananacar_notification_svc.adapter.web.discord;
 
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.out.*;
@@ -16,8 +16,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageFormatter.formatDecoratedMessage;
-import static lt.liutikas.bananacar_notification_svc.adapter.web.DiscordMessageFormatter.formatPushNotification;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.formatDecoratedMessage;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.formatPushNotification;
 
 @Service
 @RequiredArgsConstructor

@@ -1,9 +1,9 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web;
+package lt.liutikas.bananacar_notification_svc.adapter.web.discord;
 
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
-import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCommandType;
-import lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordInputException;
+import lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType;
+import lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordInputException;
 import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.SaveUniqueRideSubscriptionPort;
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static lt.liutikas.bananacar_notification_svc.adapter.web.model.DiscordCommandType.*;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.*;
 
 @Service
 @RequiredArgsConstructor

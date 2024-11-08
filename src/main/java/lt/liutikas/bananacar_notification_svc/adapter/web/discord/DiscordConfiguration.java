@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web;
+package lt.liutikas.bananacar_notification_svc.adapter.web.discord;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;

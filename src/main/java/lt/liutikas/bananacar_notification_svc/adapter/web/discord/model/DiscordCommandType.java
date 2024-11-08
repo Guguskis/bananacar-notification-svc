@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web.model;
+package lt.liutikas.bananacar_notification_svc.adapter.web.discord.model;
 
 import java.util.Arrays;
 

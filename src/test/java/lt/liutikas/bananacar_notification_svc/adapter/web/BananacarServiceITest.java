@@ -1,5 +1,6 @@
 package lt.liutikas.bananacar_notification_svc.adapter.web;
 
+import lt.liutikas.bananacar_notification_svc.adapter.web.bananacar.BananacarService;
 import lt.liutikas.bananacar_notification_svc.application.ScanRidesUseCase;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import org.junit.jupiter.api.Test;

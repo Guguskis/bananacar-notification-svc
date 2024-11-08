@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web;
+package lt.liutikas.bananacar_notification_svc.adapter.web.discord;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
