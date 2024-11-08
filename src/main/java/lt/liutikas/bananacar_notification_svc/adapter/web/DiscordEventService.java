@@ -42,7 +42,7 @@ public class DiscordEventService implements Loggable {
     private final SaveRideSubscriptionPort saveRideSubscriptionPort;
     private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
     private final RespondListSubscriptionsPort respondListSubscriptionsPort;
-    private final RespondCreatedSubscriptionPort respondCreatedSubscription;
+    private final RespondCreatedSubscriptionPort respondCreatedSubscriptionPort;
     private final RespondDeletedSubscription respondDeletedSubscriptionPort;
     private final RespondDeletedSubscriptionNotFoundPort respondDeletedSubscriptionNotFoundPort;
 
@@ -101,7 +101,7 @@ public class DiscordEventService implements Loggable {
                     .departsOnLatest(LOCAL_DATE_TIME_MAX)
                     .build());
 
-            respondCreatedSubscription.respondCreated(interaction, rideSubscription);
+            respondCreatedSubscriptionPort.respondCreated(interaction, rideSubscription);
 
         } catch (DiscordInputException e) {
 
