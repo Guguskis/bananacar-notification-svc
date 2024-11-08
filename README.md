@@ -1,8 +1,8 @@
 # Banana Car Notification Service
 
-**Tired of frantically refreshing Banana Car to find that important ride tomorrow? 😱 Fear not!**
+**Tired of frantically refreshing Banana Car to find that important ride later today? 😱**
 
-This application automates it with Discord integration:
+Fear not! This application automatically scans for new rides and notifies about them in Discord:
 
 ![discord_banana_car.png](pictures/discord_banana_car.png)
 
@@ -17,7 +17,7 @@ information:
 
 ## Set up
 
-1. Make sure to set up secrets
+1. Make sure to set up `application-secrets.properties` with following secrets
 
 ```properties
 discord.channelId=replace-secret
@@ -25,8 +25,7 @@ discord.token=replace-secret
 ```
 
 2. Run `docker build -t bananacar-notification-svc -f Dockerfile .`
-3. Start full application stack `docker compose up -d`
-4. Run the application
+3. Start application `docker compose up -d`
 
 ## Schema changes
 
