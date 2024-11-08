@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.adapter.web.bananacar;
+package lt.liutikas.bananacar_notification_svc.config;
 
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
 import net.lightbody.bmp.BrowserMobProxy;

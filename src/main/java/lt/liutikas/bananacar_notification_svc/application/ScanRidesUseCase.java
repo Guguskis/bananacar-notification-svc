@@ -6,7 +6,7 @@ import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRid
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifySubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.common.Loggable;
-import lt.liutikas.bananacar_notification_svc.common.RidesScanProperties;
+import lt.liutikas.bananacar_notification_svc.config.RidesScanProperties;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

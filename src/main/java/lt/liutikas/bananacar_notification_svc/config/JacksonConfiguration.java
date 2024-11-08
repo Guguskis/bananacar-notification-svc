@@ -1,4 +1,4 @@
-package lt.liutikas.bananacar_notification_svc.common;
+package lt.liutikas.bananacar_notification_svc.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
