@@ -90,7 +90,7 @@ jooq {
                     }
 
                     strategy {
-                        name = 'lt.liutikas.bananacar_notification_svc.common.PrefixJooqGeneratorStrategy'
+                        name = 'lt.liutikas.bananacar_notification_svc.common.util.PrefixJooqGeneratorStrategy'
                     }
                 }
             }
