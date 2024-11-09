@@ -24,7 +24,7 @@ services:
 
   selenium:
     image: selenium/standalone-firefox:132.0
-    container_name: selenium-firefox
+    container_name: bananacar-notification-svc-selenium-firefox
     environment:
       SE_ENABLE_TRACING: false
     ports:
