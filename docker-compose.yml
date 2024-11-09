@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - bananacar-network
+      - bananacar-notification-network
 
   spring-app:
     image: bananacar-notification-svc:latest
@@ -20,7 +20,7 @@ services:
       - postgres
       - selenium
     networks:
-      - bananacar-network
+      - bananacar-notification-network
 
   selenium:
     image: selenium/standalone-firefox:132.0
@@ -31,10 +31,10 @@ services:
       - "4444:4444"
     shm_size: 2g
     networks:
-      - bananacar-network
+      - bananacar-notification-network
 
 volumes:
   postgres_data:
 
 networks:
-  bananacar-network:
+  bananacar-notification-network:
