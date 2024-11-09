@@ -21,7 +21,7 @@ import java.net.URL;
 import java.time.Duration;
 
 @Configuration
-public class BananacarConfiguration implements Loggable {
+public class WebDriverConfiguration implements Loggable {
 
     private RemoteWebDriver remoteWebDriver;
     private BrowserMobProxyServer proxy;
