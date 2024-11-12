@@ -122,9 +122,7 @@ public class DiscordMessageFormatter {
 
     static String toPlainSubscriptionsListMessage() {
 
-        return """
-                %s
-                """.formatted(HEADER_SUBSCRIPTIONS_LIST);
+        return "%s".formatted(HEADER_SUBSCRIPTIONS_LIST);
     }
 
     static String toDecoratedRideCreatedMessage(Ride ride) {
@@ -169,8 +167,6 @@ public class DiscordMessageFormatter {
 
     static String toDecoratedSubscriptionsListMessage() {
 
-        return """
-                ## %s
-                """.formatted(HEADER_SUBSCRIPTIONS_LIST);
+        return "## %s".formatted(HEADER_SUBSCRIPTIONS_LIST);
     }
 }
