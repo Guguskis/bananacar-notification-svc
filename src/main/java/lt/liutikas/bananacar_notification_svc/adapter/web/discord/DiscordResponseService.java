@@ -7,6 +7,10 @@ import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscr
 import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionNotFoundPort;
 import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.message.component.ActionRow;
+import org.javacord.api.entity.message.component.Button;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.springframework.stereotype.Service;
 
@@ -87,12 +91,43 @@ public class DiscordResponseService implements
     private void respondListSubscriptions(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
 
         interaction.createImmediateResponder()
-                .setContent(toPlainSubscriptionsListMessage(subscriptions))
+                .setContent(toPlainSubscriptionsListMessage())
                 .respond()
-                .thenAcceptAsync(message -> message
-                        .setContent(toDecoratedSubscriptionsListMessage(subscriptions))
-                        .update()
-                        .join())
-                .join();
+                .thenAcceptAsync(responseMessage -> {
+                    responseMessage
+                            .setContent(toDecoratedSubscriptionsListMessage())
+                            .update();
+
+                    sendIndividualMessagesWithDeleteButton(interaction, subscriptions);
+                });
+    }
+
+    private void sendIndividualMessagesWithDeleteButton(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
+
+        TextChannel channel = interaction.getChannel()
+                .orElseThrow(() -> new IllegalStateException("Failed to acquire discord channel"));
+
+        for (RideSubscription subscription : subscriptions) {
+
+            String plainMessage = toPlain(subscription);
+            String decoratedMessage = toDecorated(subscription);
+            ActionRow deleteButton = createDeleteButton(subscription);
+
+            new MessageBuilder()
+                    .setContent(plainMessage)
+                    .addComponents(deleteButton)
+                    .send(channel)
+                    .thenAcceptAsync(message -> message.edit(decoratedMessage));
+        }
+    }
+
+    private ActionRow createDeleteButton(RideSubscription subscription) {
+
+        return ActionRow.of(
+                Button.danger(
+                        "delete_subscription_" + subscription.getId(),
+                        "Delete ID: " + subscription.getId()
+                )
+        );
     }
 }

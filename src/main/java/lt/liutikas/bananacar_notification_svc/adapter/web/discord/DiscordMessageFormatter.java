@@ -6,18 +6,17 @@ import lt.liutikas.bananacar_notification_svc.domain.Ride;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DiscordMessageFormatter {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final String HEADER_RIDE_CREATED = "New ride appeared\n";
-    private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";
-    private static final String HEADER_SUBSCRIPTION_DELETED = "Deleted Ride Subscription\n";
+
+    private static final String HEADER_RIDE_CREATED = "New ride appeared";
+    private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription";
+    private static final String HEADER_SUBSCRIPTION_DELETED = "Deleted Ride Subscription";
     private static final String RESPONSE_SUBSCRIPTION_NOT_FOUND = "Subscription not found";
-    private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
+    private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions";
     private static final String RESPONSE_SUBSCRIPTIONS_EMPTY = "There are no ride subscriptions, maybe create one?";
 
     public static String toDecorated(Ride ride) {
@@ -120,16 +119,12 @@ public class DiscordMessageFormatter {
                 """.formatted(HEADER_SUBSCRIPTIONS_LIST, RESPONSE_SUBSCRIPTIONS_EMPTY);
     }
 
-    static String toPlainSubscriptionsListMessage(List<RideSubscription> subscriptions) {
 
-        String plainSubscriptions = subscriptions.stream()
-                .map(DiscordMessageFormatter::toPlain)
-                .collect(Collectors.joining());
+    static String toPlainSubscriptionsListMessage() {
 
         return """
                 %s
-                %s
-                """.formatted(HEADER_SUBSCRIPTIONS_LIST, plainSubscriptions);
+                """.formatted(HEADER_SUBSCRIPTIONS_LIST);
     }
 
     static String toDecoratedRideCreatedMessage(Ride ride) {
@@ -172,15 +167,10 @@ public class DiscordMessageFormatter {
                 """.formatted(HEADER_SUBSCRIPTIONS_LIST, RESPONSE_SUBSCRIPTIONS_EMPTY);
     }
 
-    static String toDecoratedSubscriptionsListMessage(List<RideSubscription> subscriptions) {
-
-        String decoratedSubscriptions = subscriptions.stream()
-                .map(DiscordMessageFormatter::toDecorated)
-                .collect(Collectors.joining());
+    static String toDecoratedSubscriptionsListMessage() {
 
         return """
                 ## %s
-                %s
-                """.formatted(HEADER_SUBSCRIPTIONS_LIST, decoratedSubscriptions);
+                """.formatted(HEADER_SUBSCRIPTIONS_LIST);
     }
 }
