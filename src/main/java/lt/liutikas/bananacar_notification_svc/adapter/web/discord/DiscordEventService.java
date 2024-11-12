@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.*;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.CREATE;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.LIST;
 
 @Service
 @RequiredArgsConstructor
@@ -148,11 +149,6 @@ public class DiscordEventService implements Loggable {
                                                         SlashCommandOption.create(SlashCommandOptionType.STRING, OPTION_NAME_TO, "Destination city (e.g., Klaipeda)", true)
 //                                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "earliest", "Earliest departure time (yyyy-MM-dd HH:mm)", false),
 //                                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "latest", "Latest departure time (yyyy-MM-dd HH:mm)", false)
-                                                )),
-
-                                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, DELETE.getLastSubCommand(), "Delete a subscription by ID",
-                                                List.of(
-                                                        SlashCommandOption.create(SlashCommandOptionType.LONG, OPTION_NAME_ID, "Subscription ID", true)
                                                 ))
                                 )
                         )
