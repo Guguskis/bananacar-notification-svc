@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.formatDecoratedMessage;
-import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.formatPushNotification;
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +27,6 @@ public class DiscordNotificationService implements
         RespondSubscriptionDeletedPort,
         RespondSubscriptionNotFoundPort {
 
-    private static final String HEADER_SUBSCRIPTIONS_LIST = "Listing All Ride Subscriptions\n";
-    private static final String HEADER_SUBSCRIPTION_CREATED = "Created Ride Subscription\n";
-    private static final String HEADER_SUBSCRIPTION_DELETED = "Deleted Ride Subscription\n";
-    private static final String HEADER_RIDE_CREATED = "New ride appeared\n";
-    private static final String RESPONSE_SUBSCRIPTIONS_EMPTY = "There are no ride subscriptions, maybe create one?";
-    private static final String RESPONSE_SUBSCRIPTION_NOT_FOUND = "Subscription not found";
-
     private final ServerTextChannel channel;
 
     @Override
@@ -45,10 +36,10 @@ public class DiscordNotificationService implements
 
         new MessageBuilder()
                 .addComponents(linkButton(ride.getBananacarUrl()))
-                .setContent(HEADER_RIDE_CREATED + formatPushNotification(ride))
+                .setContent(toPlainRideCreatedMessage(ride))
                 .send(channel)
                 .thenAcceptAsync(action -> action
-                        .edit(appendHeader(HEADER_RIDE_CREATED) + formatDecoratedMessage(ride))
+                        .edit(toDecoratedRideCreatedMessage(ride))
                         .join()
                 )
                 .join();
@@ -68,12 +59,10 @@ public class DiscordNotificationService implements
     public void respondCreated(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
 
         interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_CREATED)
-                .append(formatPushNotification(rideSubscription))
+                .setContent(toPlainSubscriptionCreatedMessage(rideSubscription))
                 .respond()
                 .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_CREATED))
-                        .append(formatDecoratedMessage(rideSubscription))
+                        .setContent(toDecoratedSubscriptionCreatedMessage(rideSubscription))
                         .update()
                         .join())
                 .join();
@@ -83,12 +72,10 @@ public class DiscordNotificationService implements
     public void respondDeleted(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
 
         interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_DELETED)
-                .append(formatPushNotification(rideSubscription))
+                .setContent(toPlainSubscriptionDeletedMessage(rideSubscription))
                 .respond()
                 .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
-                        .append(formatDecoratedMessage(rideSubscription))
+                        .setContent(toDecoratedSubscriptionDeletedMessage(rideSubscription))
                         .update()
                         .join())
                 .join();
@@ -99,12 +86,10 @@ public class DiscordNotificationService implements
     public void respondDeletedNotFound(SlashCommandInteraction interaction) {
 
         interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTION_DELETED)
-                .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
+                .setContent(toPlainSubscriptionDeletedMessage())
                 .respond()
                 .thenAcceptAsync(action -> action
-                        .setContent(appendHeader(HEADER_SUBSCRIPTION_DELETED))
-                        .append(RESPONSE_SUBSCRIPTION_NOT_FOUND)
+                        .setContent(toDecoratedSubscriptionDeletedMessage())
                         .update()
                         .join())
                 .join();
@@ -113,12 +98,10 @@ public class DiscordNotificationService implements
     private void respondListSubscriptionsEmpty(SlashCommandInteraction interaction) {
 
         interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTIONS_LIST)
-                .append(RESPONSE_SUBSCRIPTIONS_EMPTY)
+                .setContent(toPlainSubscriptionsListEmptyMessage())
                 .respond()
                 .thenAcceptAsync(message -> message
-                        .setContent(appendHeader(HEADER_SUBSCRIPTIONS_LIST))
-                        .append(RESPONSE_SUBSCRIPTIONS_EMPTY)
+                        .setContent(toDecoratedSubscriptionsListEmptyMessage())
                         .update()
                         .join())
                 .join();
@@ -127,24 +110,13 @@ public class DiscordNotificationService implements
     private void respondListSubscriptions(SlashCommandInteraction interaction, List<RideSubscription> subscriptions) {
 
         interaction.createImmediateResponder()
-                .setContent(HEADER_SUBSCRIPTIONS_LIST)
-                .append(subscriptions.stream()
-                        .map(DiscordMessageFormatter::formatPushNotification)
-                        .collect(Collectors.joining()))
+                .setContent(toPlainSubscriptionsListMessage(subscriptions))
                 .respond()
                 .thenAcceptAsync(message -> message
-                        .setContent(appendHeader(HEADER_SUBSCRIPTIONS_LIST))
-                        .append(subscriptions.stream()
-                                .map(DiscordMessageFormatter::formatDecoratedMessage)
-                                .collect(Collectors.joining()))
+                        .setContent(toDecoratedSubscriptionsListMessage(subscriptions))
                         .update()
                         .join())
                 .join();
-    }
-
-    private String appendHeader(String text) {
-
-        return "## " + text;
     }
 
     private static ActionRow linkButton(URL url) {
