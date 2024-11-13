@@ -43,5 +43,4 @@ public class DiscordNotificationService implements Loggable, NotifyNewRidePort {
                 Button.link(url.toString(), "BananaCar")
         );
     }
-
 }

@@ -7,10 +7,7 @@ import lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordI
 import lt.liutikas.bananacar_notification_svc.application.port.in.DeleteRideSubscriptionPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.SaveUniqueRideSubscriptionPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionCreatedPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionDeletedPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionListPort;
-import lt.liutikas.bananacar_notification_svc.application.port.out.RespondSubscriptionNotFoundPort;
 import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.javacord.api.DiscordApi;
@@ -25,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.DiscordMessageFormatter.*;
 import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.CREATE;
 import static lt.liutikas.bananacar_notification_svc.adapter.web.discord.model.DiscordCommandType.LIST;
 
@@ -43,9 +41,6 @@ public class DiscordEventService implements Loggable {
     private final SaveUniqueRideSubscriptionPort saveUniqueRideSubscriptionPort;
     private final DeleteRideSubscriptionPort deleteRideSubscriptionPort;
     private final RespondSubscriptionListPort respondSubscriptionListPort;
-    private final RespondSubscriptionCreatedPort respondSubscriptionCreatedPort;
-    private final RespondSubscriptionDeletedPort respondSubscriptionDeletedPortPort;
-    private final RespondSubscriptionNotFoundPort respondSubscriptionNotFoundPort;
 
     private ListenerManager<SlashCommandCreateListener> listenerManager;
 
@@ -102,7 +97,7 @@ public class DiscordEventService implements Loggable {
                     .departsOnLatest(LOCAL_DATE_TIME_MAX)
                     .build());
 
-            respondSubscriptionCreatedPort.respondCreated(interaction, rideSubscription);
+            respondCreated(interaction, rideSubscription);
 
         } catch (DiscordInputException e) {
 
@@ -124,8 +119,8 @@ public class DiscordEventService implements Loggable {
 
             deleteRideSubscriptionPort.delete(subscriptionId.intValue())
                     .ifPresentOrElse(
-                            subscription -> respondSubscriptionDeletedPortPort.respondDeleted(interaction, subscription),
-                            () -> respondSubscriptionNotFoundPort.respondDeletedNotFound(interaction)
+                            sub -> respondDeleted(interaction, sub),
+                            () -> respondDeletedNotFound(interaction)
                     );
 
         } catch (DiscordInputException e) {
@@ -153,5 +148,44 @@ public class DiscordEventService implements Loggable {
                                 )
                         )
                 ));
+    }
+
+    public void respondCreated(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
+
+        respond(
+                interaction,
+                toPlainSubscriptionCreatedMessage(rideSubscription),
+                toDecoratedSubscriptionCreatedMessage(rideSubscription)
+        );
+    }
+
+    public void respondDeleted(SlashCommandInteraction interaction, RideSubscription rideSubscription) {
+
+        respond(
+                interaction,
+                toPlainSubscriptionDeletedMessage(rideSubscription),
+                toDecoratedSubscriptionDeletedMessage(rideSubscription)
+        );
+    }
+
+    public void respondDeletedNotFound(SlashCommandInteraction interaction) {
+
+        respond(
+                interaction,
+                toPlainSubscriptionDeletedMessage(),
+                toDecoratedSubscriptionDeletedMessage()
+        );
+    }
+
+    private void respond(SlashCommandInteraction interaction, String pushNotificationContent, String messageContent) {
+
+        interaction.createImmediateResponder()
+                .setContent(pushNotificationContent)
+                .respond()
+                .thenAcceptAsync(action -> action
+                        .setContent(messageContent)
+                        .update()
+                        .join())
+                .join();
     }
 }
