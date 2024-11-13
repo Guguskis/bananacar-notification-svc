@@ -87,12 +87,11 @@ public class DiscordMessageFormatter {
                 """.formatted(HEADER_RIDE_CREATED, toPlain(ride));
     }
 
-    static String toPlainSubscriptionCreatedMessage(RideSubscription rideSubscription) {
+    static String toPlainSubscriptionCreatedMessage() {
 
         return """
                 %s
-                %s
-                """.formatted(HEADER_SUBSCRIPTION_CREATED, toPlain(rideSubscription));
+                """.formatted(HEADER_SUBSCRIPTION_CREATED);
     }
 
     static String toPlainSubscriptionDeletedMessage(RideSubscription rideSubscription) {
@@ -133,12 +132,11 @@ public class DiscordMessageFormatter {
                 """.formatted(HEADER_RIDE_CREATED, toDecorated(ride));
     }
 
-    static String toDecoratedSubscriptionCreatedMessage(RideSubscription rideSubscription) {
+    static String toDecoratedSubscriptionCreatedMessage() {
 
         return """
                 ## %s
-                %s
-                """.formatted(HEADER_SUBSCRIPTION_CREATED, toDecorated(rideSubscription));
+                """.formatted(HEADER_SUBSCRIPTION_CREATED);
     }
 
     static String toDecoratedSubscriptionDeletedMessage(RideSubscription rideSubscription) {
