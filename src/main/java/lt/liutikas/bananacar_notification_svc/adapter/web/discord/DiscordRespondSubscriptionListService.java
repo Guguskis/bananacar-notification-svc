@@ -106,17 +106,21 @@ public class DiscordRespondSubscriptionListService implements Loggable, RespondS
                 .orElseThrow(() -> new IllegalStateException("Failed to acquire discord channel"));
 
         for (RideSubscription subscription : subscriptions) {
-
-            String plainMessage = toPlain(subscription);
-            String decoratedMessage = toDecorated(subscription);
-            ActionRow deleteButton = createDeleteButton(subscription);
-
-            new MessageBuilder()
-                    .setContent(plainMessage)
-                    .addComponents(deleteButton)
-                    .send(channel)
-                    .thenAcceptAsync(message -> message.edit(decoratedMessage));
+            sendMessage(channel, subscription);
         }
+    }
+
+    private void sendMessage(TextChannel channel, RideSubscription subscription) {
+
+        String plainMessage = toPlain(subscription);
+        String decoratedMessage = toDecorated(subscription);
+        ActionRow deleteButton = createDeleteButton(subscription);
+
+        new MessageBuilder()
+                .setContent(plainMessage)
+                .addComponents(deleteButton)
+                .send(channel)
+                .thenAcceptAsync(message -> message.edit(decoratedMessage));
     }
 
     private ActionRow createDeleteButton(RideSubscription subscription) {
