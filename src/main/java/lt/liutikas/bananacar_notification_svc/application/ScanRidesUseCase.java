@@ -29,7 +29,7 @@ public class ScanRidesUseCase implements Loggable {
     @Transactional
     public void scan() {
 
-        getLogger().info("Starting BananaCar ride scan");
+        getLogger().debug("Starting BananaCar ride scan");
 
         List<Ride> newRides = fetchNewRides();
 
@@ -38,7 +38,7 @@ public class ScanRidesUseCase implements Loggable {
         createRidesPort.save(newRides);
         notifySubscriptionsPort.notify(newRides);
 
-        getLogger().info("Completed BananaCar ride scan");
+        getLogger().debug("Completed BananaCar ride scan");
     }
 
     private List<Ride> fetchNewRides() {
