@@ -3,11 +3,13 @@ package lt.liutikas.bananacar_notification_svc.application;
 import lombok.RequiredArgsConstructor;
 import lt.liutikas.bananacar_notification_svc.application.port.in.CreateRidesPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchLatestRidesPort;
+import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRideSubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.application.port.in.FetchRidesByBananacarRideIdPort;
 import lt.liutikas.bananacar_notification_svc.application.port.out.NotifySubscriptionsPort;
 import lt.liutikas.bananacar_notification_svc.common.properties.RidesScanProperties;
 import lt.liutikas.bananacar_notification_svc.common.util.Loggable;
 import lt.liutikas.bananacar_notification_svc.domain.Ride;
+import lt.liutikas.bananacar_notification_svc.domain.RideSubscription;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +27,19 @@ public class ScanRidesUseCase implements Loggable {
     private final CreateRidesPort createRidesPort;
     private final NotifySubscriptionsPort notifySubscriptionsPort;
     private final RidesScanProperties ridesScanProperties;
+    private final FetchRideSubscriptionsPort fetchRideSubscriptionsPor;
 
     @Transactional
     public void scan() {
 
         getLogger().debug("Starting BananaCar ride scan");
+
+        List<RideSubscription> subscriptions = fetchRideSubscriptionsPor.fetch();
+
+        if (subscriptions.isEmpty()) {
+            getLogger().debug("Skipped BananaCar ride scan due to lack of subscriptions");
+            return;
+        }
 
         List<Ride> newRides = fetchNewRides();
 
